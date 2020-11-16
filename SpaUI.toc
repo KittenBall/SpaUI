@@ -1,0 +1,20 @@
+## Interface: 90001
+## Author: 绿毛龟12138
+## Version: 1.0.0
+## Title: WUI
+## Title-zhCN: WUI
+## Notes: 常用的许多模块，收集自各个插件或论坛等
+## DefaultState: enabled
+
+Core.lua
+Features.lua
+
+#Features
+features\CastBar.lua
+features\UnitFrames.lua
+features\EasyDelete.lua
+features\ActionBar.lua
+features\AutoSell.lua
+features\AutoRepair.lua
+features\Align.lua
+features\MarkPosition.lua
