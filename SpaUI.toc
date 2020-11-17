@@ -7,7 +7,6 @@
 ## DefaultState: enabled
 
 Core.lua
-Features.lua
 
 #Features
 features\CastBar.lua
