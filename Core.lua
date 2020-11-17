@@ -2,6 +2,9 @@ local addonName, SpaUI = ...
 
 print(addonName.."已载入")
 
+SlashCmdList["RELOADUI"] = function() ReloadUI() end
+SLASH_RELOADUI1 = "/rl"
+
 SpaUI.EventListener = CreateFrame("Frame", "SpaUIEventListener")
 SpaUI.EventListener:SetScript("OnEvent", function(self,event,...)
     if not SpaUI.Events or not SpaUI.Events[event] then return end

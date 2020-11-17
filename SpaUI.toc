@@ -1,8 +1,8 @@
 ## Interface: 90001
 ## Author: 绿毛龟12138
 ## Version: 1.0.0
-## Title: WUI
-## Title-zhCN: WUI
+## Title: SpaUI
+## Title-zhCN: SpaUI
 ## Notes: 常用的许多模块，收集自各个插件或论坛等
 ## DefaultState: enabled
 
