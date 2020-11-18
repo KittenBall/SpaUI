@@ -17,3 +17,4 @@ features\AutoSell.lua
 features\AutoRepair.lua
 features\Align.lua
 features\MarkPosition.lua
+features\IDs.lua

@@ -1,4 +1,3 @@
--- Castbar timer from thek 施法条计时器
 CastingBarFrame.timer = CastingBarFrame:CreateFontString(nil)
 CastingBarFrame.timer:SetFont("Fonts\\ARIALN.ttf", 8, "THINOUTLINE")
 CastingBarFrame.timer:SetPoint("RIGHT", CastingBarFrame, "RIGHT", 0, 2)

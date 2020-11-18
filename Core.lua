@@ -1,17 +1,36 @@
 local addonName, SpaUI = ...
 
-print(addonName.."已载入")
+print(addonName .. "已载入")
 
 SlashCmdList["RELOADUI"] = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"
 
 SpaUI.EventListener = CreateFrame("Frame", "SpaUIEventListener")
-SpaUI.EventListener:SetScript("OnEvent", function(self,event,...)
-    if not SpaUI.Events or not SpaUI.Events[event] then return end
-    local len = #SpaUI.Events[event]
-    for i = 1, len do
-        if SpaUI.Events[event][i] then SpaUI.Events[event][i](event, ...) end
+SpaUI.EventListener:SetScript("OnEvent", function(self, event, ...)
+    if SpaUI.Events and SpaUI.Events[event] then
+        local len = #SpaUI.Events[event]
+        for i = 1, len do
+            if SpaUI.Events[event][i] then
+                SpaUI.Events[event][i](event, ...)
+            end
+        end
     end
+
+    if SpaUI.OnceEvents and SpaUI.OnceEvents[event] then
+        -- 回调仅通知一次的事件
+        len = #SpaUI.OnceEvents[event]
+        for i = 1, len do
+            if SpaUI.OnceEvents[event][i] then
+                SpaUI.OnceEvents[event][i](event, ...)
+            end
+        end
+        SpaUI.OnceEvents[event] = nil
+
+        -- 仅通知一次的事件回调完毕后，如果没有该事件没有持久注册，则注销该事件监听
+        if not SpaUI.Events or not SpaUI.Events[event] or #SpaUI.Events[event] ==
+            0 then self:UnregisterEvent(event) end
+    end
+
 end)
 
 -- 注册事件
@@ -26,6 +45,20 @@ function SpaUI:RegisterEvent(event, handler)
     local len = #self.Events[event]
     for i = 1, len do if self.Events[event][i] == handler then return end end
     tinsert(self.Events[event], handler)
+end
+
+-- 注册事件，针对该事件仅通知一次，不提供注销方法
+function SpaUI:CallbackOnce(event, handler)
+    if not event or not handler or type(handler) ~= "function" then return end
+    if not self.EventListener then return end
+    if not self.EventListener:IsEventRegistered(event) then
+        self.EventListener:RegisterEvent(event)
+    end
+    if not self.OnceEvents then self.OnceEvents = {} end
+    if not self.OnceEvents[event] then self.OnceEvents[event] = {} end
+    local len = #self.OnceEvents[event]
+    for i = 1, len do if self.OnceEvents[event][i] == handler then return end end
+    tinsert(self.OnceEvents[event], handler)
 end
 
 -- 注销事件

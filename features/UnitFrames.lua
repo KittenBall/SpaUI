@@ -1,5 +1,4 @@
 -- 单位框体
-
 -- 隐藏玩家和宠物头像浮动状态文字
 PlayerHitIndicator:SetText(nil)
 PlayerHitIndicator.SetText = function() end
@@ -54,13 +53,14 @@ hooksecurefunc("TargetFrame_UpdateBuffAnchor",
 -- 显示Buff来源
 local function UNIT_AURA_OnHooK(self, unit, buffIndex, filter)
     if unit and buffIndex then
-        local _, _, _, _, _, _, source = UnitAura(unit, buffIndex, filter)
+        local _, _, _, _, _, _, source, _, _, _, _, _, castByPlayer =
+            UnitAura(unit, buffIndex, filter)
         if source then
             local name = GetUnitName(source)
             if name then
                 GameTooltip:AddLine("")
                 local r, g, b
-                if UnitIsPlayer(source) then
+                if castByPlayer then
                     local class = UnitClassBase(source)
                     if class then
                         r, g, b = GetClassColor(class)
@@ -76,13 +76,14 @@ end
 
 local function UNIT_BUFF_OnHooK(self, unit, buffIndex)
     if unit and buffIndex then
-        local _, _, _, _, _, _, source = UnitAura(unit, buffIndex)
+        local _, _, _, _, _, _, source, _, _, _, _, _, castByPlayer =
+            UnitAura(unit, buffIndex)
         if source then
             local name = GetUnitName(source)
             if name then
                 GameTooltip:AddLine("")
                 local r, g, b
-                if UnitIsPlayer(source) then
+                if castByPlayer then
                     local class = UnitClassBase(source)
                     if class then
                         r, g, b = GetClassColor(class)
@@ -98,13 +99,14 @@ end
 
 local function UNIT_DEBUFF_OnHooK(self, unit, buffIndex)
     if unit and buffIndex then
-        local _, _, _, _, _, _, source = UnitAura(unit, buffIndex, "HARMFUL")
+        local _, _, _, _, _, _, source, _, _, _, _, _, castByPlayer =
+            UnitAura(unit, buffIndex, "HARMFUL")
         if source then
             local name = GetUnitName(source)
             if name then
                 GameTooltip:AddLine("")
                 local r, g, b
-                if UnitIsPlayer(source) then
+                if castByPlayer then
                     local class = UnitClassBase(source)
                     if class then
                         r, g, b = GetClassColor(class)
@@ -124,24 +126,24 @@ hooksecurefunc(GameTooltip, "SetUnitAura", UNIT_AURA_OnHooK)
 
 -- 宠物生命值和资源可见性优化
 local function TextStatusBar_UpdateTextStringWithValues_OnHook(statusFrame,
-    textString,
-    value, valueMin,
-    valueMax)
-if (statusFrame and PetFrameHealthBar and PetFrameManaBar and
-(statusFrame == PetFrameHealthBar or statusFrame == PetFrameManaBar) and
-statusFrame.TextString) then
-if statusFrame.LeftText then statusFrame.LeftText:Hide() end
-if statusFrame.RightText then statusFrame.RightText:Hide() end
-local valueDisplay
-if value < 1e4 then
-valueDisplay = ('%d'):format(value)
-else
-valueDisplay = ('%.2f万'):format(value / 1e4)
-end
-statusFrame.TextString:SetText(valueDisplay)
-statusFrame.TextString:Show()
-end
+                                                               textString,
+                                                               value, valueMin,
+                                                               valueMax)
+    if (statusFrame and PetFrameHealthBar and PetFrameManaBar and
+        (statusFrame == PetFrameHealthBar or statusFrame == PetFrameManaBar) and
+        statusFrame.TextString) then
+        if statusFrame.LeftText then statusFrame.LeftText:Hide() end
+        if statusFrame.RightText then statusFrame.RightText:Hide() end
+        local valueDisplay
+        if value < 1e4 then
+            valueDisplay = ('%d'):format(value)
+        else
+            valueDisplay = ('%.2f万'):format(value / 1e4)
+        end
+        statusFrame.TextString:SetText(valueDisplay)
+        statusFrame.TextString:Show()
+    end
 end
 
 hooksecurefunc("TextStatusBar_UpdateTextStringWithValues",
-TextStatusBar_UpdateTextStringWithValues_OnHook)
+               TextStatusBar_UpdateTextStringWithValues_OnHook)

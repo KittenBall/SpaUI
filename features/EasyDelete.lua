@@ -20,6 +20,7 @@ end
 
 local function EasyDeleteInitialization(event, loaded_addon)
     if loaded_addon ~= addonName then return end
+    SpaUI:UnregisterEvent('ADDON_LOADED',EasyDeleteInitialization)
     -- create item link container
     SpaUI.EasyDeleteLink = StaticPopup1:CreateFontString(nil, 'ARTWORK',
                                                          'GameFontHighlight')
@@ -30,5 +31,5 @@ local function EasyDeleteInitialization(event, loaded_addon)
                             function(self) SpaUI.EasyDeleteLink:Hide() end)
 end
 
-SpaUI:RegisterEvent('ADDON_LOADED', EasyDeleteInitialization)
+SpaUI:CallbackOnce('ADDON_LOADED', EasyDeleteInitialization)
 SpaUI:RegisterEvent('DELETE_ITEM_CONFIRM', DeleteItemConfirm)

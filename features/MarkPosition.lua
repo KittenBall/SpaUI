@@ -2,16 +2,23 @@
 local WayPointPositionButton = CreateFrame("Button", "WayPointPositionButton",
                                            WorldMapFrame.BorderFrame,
                                            "UIPanelButtonTemplate")
-WayPointPositionButton:SetWidth(50)
+WayPointPositionButton:SetWidth(65)
 WayPointPositionButton:SetHeight(18)
--- WayPointPositionButton.Font = WayPointPositionButton:CreateFontString(nil,nil)
--- WayPointPositionButton.Font:SetFont("Fonts\\ZYKai_T.ttf",12)
--- WayPointPositionButton:SetFontString(WayPointPositionButton.Font)
 WayPointPositionButton:SetText("定位")
-WayPointPositionButton:SetPoint("LEFT", WorldMapFrame.BorderFrame.Tutorial,
-                                "RIGHT", -20, 1)
-WayPointPositionButton:SetScript("OnShow",
-                                 function() WayPointContainer:Close() end)
+
+function WayPointPositionButton:OnShow()
+    WayPointPositionButton:ClearAllPoints()
+    if MapsterOptionsButton and MapsterOptionsButton:IsShown() then
+        WayPointPositionButton:SetPoint('RIGHT', MapsterOptionsButton, 'LEFT',
+                                        0, 0)
+    else
+        WayPointPositionButton:SetPoint('RIGHT',
+                                        WorldMapFrame.BorderFrame.TitleBg,
+                                        'RIGHT', -20, 1)
+    end
+    WayPointContainer:Close()
+end
+WayPointPositionButton:SetScript("OnShow", WayPointPositionButton.OnShow)
 
 -- 设置目标位置
 function WayPointPositionButton:SetWayPoint(desX, desY)
@@ -51,7 +58,21 @@ function WayPointPositionButton.OnClick(button, down)
         end
     end
 end
+
 WayPointPositionButton:SetScript("OnClick", WayPointPositionButton.OnClick)
+
+-- 地图切换
+function WayPointPositionButton:OnMapChanged()
+    local currentViewMapID = WorldMapFrame:GetMapID()
+    if C_Map.CanSetUserWaypointOnMap(currentViewMapID) then
+        WayPointPositionButton:Enable()
+    else
+        WayPointPositionButton:Disable()
+    end
+end
+
+hooksecurefunc(WorldMapFrame, "OnMapChanged",
+               WayPointPositionButton.OnMapChanged)
 
 local WayPointContainer = CreateFrame("Frame", "WayPointContainer",
                                       WorldMapFrame)
