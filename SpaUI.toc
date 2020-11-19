@@ -1,10 +1,11 @@
-## Interface: 90001
+## Interface: 90002
 ## Author: 绿毛龟12138
 ## Version: 1.0.0
 ## Title: SpaUI
 ## Title-zhCN: SpaUI
 ## Notes: 常用的许多模块，收集自各个插件或论坛等
 ## DefaultState: enabled
+## Version: 1.0-alpha
 
 Core.lua
 
@@ -18,3 +19,4 @@ features\AutoRepair.lua
 features\Align.lua
 features\MarkPosition.lua
 features\IDs.lua
+features\MinimapPing.lua

@@ -5,6 +5,7 @@ local WayPointPositionButton = CreateFrame("Button", "WayPointPositionButton",
 WayPointPositionButton:SetWidth(65)
 WayPointPositionButton:SetHeight(18)
 WayPointPositionButton:SetText("定位")
+WayPointPositionButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
 function WayPointPositionButton:OnShow()
     WayPointPositionButton:ClearAllPoints()
@@ -34,14 +35,17 @@ function WayPointPositionButton:SetWayPoint(desX, desY)
 end
 
 -- 点击定位按钮
-function WayPointPositionButton.OnClick(button, down)
+function WayPointPositionButton.OnClick(widget, button, down)
+    if button == "RightButton" then
+        C_Map.ClearUserWaypoint()
+        C_SuperTrack.SetSuperTrackedUserWaypoint(false);
+        return
+    end
     local currentViewMapID = WorldMapFrame:GetMapID()
     if not C_Map.CanSetUserWaypointOnMap(currentViewMapID) then
         print("|cFFFF0000当前地图无法标记！|r")
         return
     end
-    C_Map.ClearUserWaypoint()
-    C_SuperTrack.SetSuperTrackedUserWaypoint(false);
     if WayPointContainer then
         if WayPointContainer:IsShown() then
             local xl = WayPointContainer.CoordX:GetText():len()
@@ -73,6 +77,25 @@ end
 
 hooksecurefunc(WorldMapFrame, "OnMapChanged",
                WayPointPositionButton.OnMapChanged)
+
+-- 显示鼠标提示
+function WayPointPositionButton:ShowTooltip(event)
+    if event == "OnEnter" then
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+        GameTooltip:SetText("左键显示输入框，右键取消位置标记")
+        GameTooltip:Show()
+    else
+        GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
+        GameTooltip:Hide()
+    end
+end
+
+WayPointPositionButton:SetScript("OnEnter", function(self)
+    WayPointPositionButton:ShowTooltip("OnEnter")
+end)
+WayPointPositionButton:SetScript("OnLeave", function(self)
+    WayPointPositionButton:ShowTooltip("OnLeave")
+end)
 
 local WayPointContainer = CreateFrame("Frame", "WayPointContainer",
                                       WorldMapFrame)

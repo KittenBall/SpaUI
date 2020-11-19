@@ -1,6 +1,7 @@
 local addonName, SpaUI = ...
 
-print(addonName .. "已载入")
+print(addonName .. "|cFF00BFFF" .. GetAddOnMetadata(addonName, "Version") ..
+          "|r已载入")
 
 SlashCmdList["RELOADUI"] = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"
