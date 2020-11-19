@@ -2,7 +2,7 @@ local addonName,SpaUI = ...
 
 -- 自动修理
 local function AutoRepair()
-    if (CanMerchantRepair()) then
+    if CanMerchantRepair() then
         local cost = GetRepairAllCost()
         if cost > 0 then
             local money = GetMoney()

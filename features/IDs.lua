@@ -1,4 +1,6 @@
 -- 各种ID，修改自idTip
+
+-- Tooltip添加id
 local function addLine(tooltip, id, prefix)
     if not id or id == "" then return end
     id = HIGHLIGHT_FONT_COLOR_CODE .. id .. FONT_COLOR_CODE_CLOSE
@@ -26,7 +28,7 @@ hooksecurefunc(GameTooltip, "SetUnitAura", function(self, ...)
 end)
 
 GameTooltip:HookScript("OnTooltipSetSpell", function(self)
-    -- 天赋面板会出现两次，这里过滤点，来自idTip
+    -- 天赋面板会出现两次，这里过滤掉，来自idTip
     local frame, text
     for i = 1, 15 do
         frame = _G[self:GetName() .. "TextLeft" .. i]
@@ -41,7 +43,7 @@ end)
 local NpcIDPrefix = "NpcID："
 
 GameTooltip:HookScript("OnTooltipSetUnit", function(self)
-    if not isClassicWow then if C_PetBattles.IsInBattle() then return end end
+    if C_PetBattles.IsInBattle() then return end
     local unit = select(2, self:GetUnit())
     if unit then
         local guid = UnitGUID(unit) or ""
