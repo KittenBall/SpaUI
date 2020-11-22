@@ -1,7 +1,8 @@
 local addonName, SpaUI = ...
 
-print(addonName .. "|cFF00BFFF" .. GetAddOnMetadata(addonName, "Version") ..
-          "|r已载入")
+local L = SpaUI.Localization
+
+print(L["addon_loaded_tip"]:format(addonName,GetAddOnMetadata(addonName, "Version")))
 
 SlashCmdList["RELOADUI"] = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"
@@ -95,4 +96,19 @@ function SpaUI:UnregisterAllEvents()
     if not self.EventListener then return end
     self.EventListener:UnregisterAllEvents()
     self.Events = nil
+end
+
+-- 通过本地化的职业名称获取职业枚举 比如：法师->MAGE
+function SpaUI:GetClassFileByLocalizedClassName(localizedClassName)
+    if not SpaUI.ClassFileToLocalizedClassMap then
+        SpaUI.ClassFileToLocalizedClassMap = {}
+        for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+            SpaUI.ClassFileToLocalizedClassMap[v] = k
+        end
+    end
+    return SpaUI.ClassFileToLocalizedClassMap[localizedClassName]
+end
+
+function SpaUI:ShowUIError(string)
+    UIErrorsFrame:AddMessage(string, 1.0, 0.0, 0.0, 1, 3)
 end

@@ -1,6 +1,8 @@
 -- 小地图ping，修改自SexyMap
 local addonName, SpaUI = ...
 
+local L = SpaUI.Localization
+
 local function MinimapPingTipInitalize()
     SpaUI.MinimapPingFrame = CreateFrame("Frame", "SpaUIMinimapPingFrame",
                                          Minimap, "BackdropTemplate")
@@ -33,7 +35,7 @@ local function MinimapPingTipInitalize()
     SpaUI.MinimapPingFrame.animGroup.anim:SetFromAlpha(1)
     SpaUI.MinimapPingFrame.animGroup.anim:SetToAlpha(0)
     SpaUI.MinimapPingFrame.animGroup.anim:SetOrder(1)
-    SpaUI.MinimapPingFrame.animGroup.anim:SetDuration(2)
+    SpaUI.MinimapPingFrame.animGroup.anim:SetDuration(2.5)
 end
 
 local function OnMinimapPing(event, unit)
@@ -48,14 +50,14 @@ local function OnMinimapPing(event, unit)
         color = GRAY_FONT_COLOR
     end
 
-    local name = UnitName(unit)
+    local name = GetUnitName(unit,false)
     if not name then return end
     -- 添加小队信息
     if IsInRaid() then
         for i = 1, GetNumGroupMembers() do
             local member, _, subgroup = GetRaidRosterInfo(i)
             if member == name and subgroup then
-                name = ("(%d队)%s"):format(subgroup, name)
+                name = L["minimap_ping_who_group"]:format(subgroup, name)
                 break
             end
         end

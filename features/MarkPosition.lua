@@ -1,21 +1,23 @@
 -- 输入坐标标记位置
+local addonName, SpaUI = ...
+
+local L = SpaUI.Localization
+
 local WayPointPositionButton = CreateFrame("Button", "WayPointPositionButton",
                                            WorldMapFrame.BorderFrame,
                                            "UIPanelButtonTemplate")
 WayPointPositionButton:SetWidth(65)
 WayPointPositionButton:SetHeight(18)
-WayPointPositionButton:SetText("定位")
+WayPointPositionButton:SetText(L["mp_button_text"])
 WayPointPositionButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
 function WayPointPositionButton:OnShow()
-    WayPointPositionButton:ClearAllPoints()
+    self:ClearAllPoints()
     if MapsterOptionsButton and MapsterOptionsButton:IsShown() then
-        WayPointPositionButton:SetPoint('RIGHT', MapsterOptionsButton, 'LEFT',
-                                        0, 0)
+        self:SetPoint('RIGHT', MapsterOptionsButton, 'LEFT', 0, 0)
     else
-        WayPointPositionButton:SetPoint('RIGHT',
-                                        WorldMapFrame.BorderFrame.TitleBg,
-                                        'RIGHT', -20, 1)
+        self:SetPoint('RIGHT', WorldMapFrame.BorderFrame.TitleBg, 'RIGHT', -20,
+                      1)
     end
     WayPointContainer:Close()
 end
@@ -30,7 +32,7 @@ function WayPointPositionButton:SetWayPoint(desX, desY)
         C_Map.SetUserWaypoint(point)
         C_SuperTrack.SetSuperTrackedUserWaypoint(true);
     else
-        print("|cFFFF0000当前地图无法标记！|r")
+        SpaUI:ShowUIError(L["mp_cannot_mark"])
     end
 end
 
@@ -43,7 +45,7 @@ function WayPointPositionButton.OnClick(widget, button, down)
     end
     local currentViewMapID = WorldMapFrame:GetMapID()
     if not C_Map.CanSetUserWaypointOnMap(currentViewMapID) then
-        print("|cFFFF0000当前地图无法标记！|r")
+        SpaUI:ShowUIError(L["mp_cannot_mark"])
         return
     end
     if WayPointContainer then
@@ -82,7 +84,7 @@ hooksecurefunc(WorldMapFrame, "OnMapChanged",
 function WayPointPositionButton:ShowTooltip(event)
     if event == "OnEnter" then
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-        GameTooltip:SetText("左键显示输入框，右键取消位置标记")
+        GameTooltip:SetText(L["mp_button_tooltip"])
         GameTooltip:Show()
     else
         GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
@@ -100,9 +102,20 @@ end)
 local WayPointContainer = CreateFrame("Frame", "WayPointContainer",
                                       WorldMapFrame)
 WayPointContainer:SetFrameStrata("DIALOG")
-WayPointContainer:SetPoint("BOTTOM", WayPointPositionButton, "TOP", 0, 5)
 WayPointContainer:SetWidth(100)
 WayPointContainer:SetHeight(25)
+
+function WayPointContainer:ChangePointWithWorldMapFrameSize()
+    WayPointContainer:ClearAllPoints()
+    if WorldMapFrame:IsMaximized() then
+        WayPointContainer:SetPoint("RIGHT", WayPointPositionButton, "LEFT", -1, 0)
+    else
+        WayPointContainer:SetPoint("BOTTOM", WayPointPositionButton, "TOP", 0, 5)
+    end
+end
+
+hooksecurefunc(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame,"Minimize",WayPointContainer.ChangePointWithWorldMapFrameSize)
+hooksecurefunc(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame,"Maximize",WayPointContainer.ChangePointWithWorldMapFrameSize)
 
 function WayPointContainer:Close()
     WayPointContainer.CoordX:SetText("")

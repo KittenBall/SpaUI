@@ -1,4 +1,6 @@
-local addonName,SpaUI = ...
+local addonName, SpaUI = ...
+
+local L = SpaUI.Localization
 
 -- 自动修理
 local function AutoRepair()
@@ -13,20 +15,19 @@ local function AutoRepair()
                 end
                 if guildMoney > cost and CanGuildBankRepair() then
                     RepairAllItems(1)
-                    print(format("|cfff07100公会修理花费: %s|r",
+                    print(format(L["auto_repair_guild_cost"],
                                  GetCoinTextureString(cost)))
                     return
                 end
             end
             if money > cost then
                 RepairAllItems()
-                print(format("|cffead000修理花费: %s|r",
-                             GetCoinTextureString(cost)))
+                print(format(L["auto_repair_cost"], GetCoinTextureString(cost)))
             else
-                print("你没钱，穷逼！")
+                SpaUI:ShowUIError(L["auto_repair_no_money"])
             end
         end
     end
 end
 
-SpaUI:RegisterEvent('MERCHANT_SHOW',AutoRepair)
+SpaUI:RegisterEvent('MERCHANT_SHOW', AutoRepair)

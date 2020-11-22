@@ -1,4 +1,7 @@
 -- 各种ID，修改自idTip
+local addonName, SpaUI = ...
+
+local L = SpaUI.Localization
 
 -- Tooltip添加id
 local function addLine(tooltip, id, prefix)
@@ -10,7 +13,7 @@ local function addLine(tooltip, id, prefix)
 end
 
 -- 法术ID
-local SpellIDPrefix = "法术ID："
+local SpellIDPrefix = L["tooltip_spell_id"]
 
 hooksecurefunc(GameTooltip, "SetUnitBuff", function(self, ...)
     local id = select(10, UnitBuff(...))
@@ -40,7 +43,7 @@ GameTooltip:HookScript("OnTooltipSetSpell", function(self)
 end)
 
 -- NPC ID
-local NpcIDPrefix = "NpcID："
+local NpcIDPrefix = L["tooltip_npc_id"]
 
 GameTooltip:HookScript("OnTooltipSetUnit", function(self)
     if C_PetBattles.IsInBattle() then return end
@@ -55,7 +58,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 end)
 
 -- 货币ID
-local CurrencyIDPrefix = "货币ID："
+local CurrencyIDPrefix = L["tooltip_currency_id"]
 
 hooksecurefunc(GameTooltip, "SetCurrencyToken", function(self, index)
     local id = tonumber(string.match(C_CurrencyInfo.GetCurrencyListLink(index),
@@ -70,7 +73,7 @@ hooksecurefunc(GameTooltip, "SetCurrencyTokenByID",
                function(self, id) addLine(self, id, CurrencyIDPrefix) end)
 
 -- 任务ID
-local TaskIDPrefix = "任务ID"
+local TaskIDPrefix = L["tooltip_task_id"]
 
 hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)
     local id = C_QuestLog.GetQuestIDForLogIndex(self.questLogIndex)
@@ -82,3 +85,9 @@ hooksecurefunc("TaskPOI_OnEnter", function(self)
         addLine(GameTooltip, self.questID, TaskIDPrefix)
     end
 end)
+
+local function attachItemTooltip(tooltip)
+    -- print(111)
+end
+
+GameTooltip:HookScript("OnTooltipSetItem", attachItemTooltip)

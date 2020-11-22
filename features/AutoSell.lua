@@ -1,5 +1,7 @@
 local addonName,SpaUI = ...
 
+local L = SpaUI.Localization
+
 -- 自动卖店
 local function AutoSell()
     local total = 0
@@ -17,7 +19,7 @@ local function AutoSell()
                     UseContainerItem(container, slot)
                     PickupMerchantItem()
                     total = total + price
-                    print(string.format("%s卖出了%s", link,
+                    print(string.format(L["auto_sell_detail"], link,
                                         GetCoinTextureString(price)))
                 end
             end
@@ -25,7 +27,7 @@ local function AutoSell()
     end
 
     if total > 0 then
-        print(string.format("共获得收入%s", GetCoinTextureString(total)))
+        print(string.format(L["auto_sell_total"], GetCoinTextureString(total)))
     end
 end
 

@@ -1,25 +1,32 @@
 ## Interface: 90002
 ## Author: 绿毛龟12138
-## Version: 1.0.0
+## Version: 1.0-alpha
 ## Title: SpaUI
 ## Title-zhCN: SpaUI
 ## Notes: 常用的许多模块，收集自各个插件或论坛等
 ## DefaultState: enabled
-## Version: 1.0-alpha
 
-Core.lua
+localization.lua
+core.lua
+
+config\config.lua
 
 #Features
-features\CastBar.lua
+features\Castbar.lua
 features\UnitFrames.lua
 #修改自EasyDeleteConfirm
 features\EasyDelete.lua
-features\ActionBar.lua
+features\Actionbar.lua
 features\AutoSell.lua
 features\AutoRepair.lua
 features\Align.lua
 features\MarkPosition.lua
 #修改自idTip
-features\IDs.lua
+features\Tooltip.lua
 #修改自SexyMap
 features\MinimapPing.lua
+#修改自ParagonReputation
+features\Reputation.lua
+features\RaidMarkerIcon.lua
+#修改自SUI
+features\FriendsColor.lua

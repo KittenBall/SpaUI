@@ -1,4 +1,8 @@
 -- 单位框体
+local addonName,SpaUI = ...
+
+local L = SpaUI.Localization
+
 -- 隐藏玩家和宠物头像浮动状态文字
 PlayerHitIndicator:SetText(nil)
 PlayerHitIndicator.SetText = function() end
@@ -66,7 +70,7 @@ local function UNIT_AURA_OnHooK(self, unit, buffIndex, filter)
                         r, g, b = GetClassColor(class)
                     end
                 end
-                GameTooltip:AddDoubleLine("法术来源：", name, 1, 0.82, 0,
+                GameTooltip:AddDoubleLine(L["uf_spell_source_prefix"], name, 1, 0.82, 0,
                                           r or 1, g or 1, b or 1)
                 GameTooltip:Show()
             end
@@ -89,7 +93,7 @@ local function UNIT_BUFF_OnHooK(self, unit, buffIndex)
                         r, g, b = GetClassColor(class)
                     end
                 end
-                GameTooltip:AddDoubleLine("增益来源：", name, 1, 0.82, 0,
+                GameTooltip:AddDoubleLine(L["uf_buff_source_prefix"], name, 1, 0.82, 0,
                                           r or 1, g or 1, b or 1)
                 GameTooltip:Show()
             end
@@ -112,7 +116,7 @@ local function UNIT_DEBUFF_OnHooK(self, unit, buffIndex)
                         r, g, b = GetClassColor(class)
                     end
                 end
-                GameTooltip:AddDoubleLine("减益来源：", name, 1, 0.82, 0,
+                GameTooltip:AddDoubleLine(L["uf_debuff_source_prefix"], name, 1, 0.82, 0,
                                           r or 1, g or 1, b or 1)
                 GameTooltip:Show()
             end
