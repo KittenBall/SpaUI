@@ -2,7 +2,7 @@
 ## Author: 绿毛龟12138
 ## Version: 1.0-alpha
 ## Title: |cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI
-## Notes: 常用的许多模块，大部分收集自各个插件或论坛等
+## Notes: 暴雪界面增强，部分代码来源于其它插件及论坛
 ## DefaultState: enabled
 
 Localization.lua

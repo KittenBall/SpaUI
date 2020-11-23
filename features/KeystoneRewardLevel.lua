@@ -26,8 +26,15 @@ local function UpdateRewardButtonVisibility(show)
     end
 end
 
-local function ShowCurrentLevelAndReward()
-    if not ChallengesFrame or not RewardContainer or not RewardContainer:IsShown() then return end
+local function RewardContainer_OnShow()
+    if not ChallengesFrame or not SpaUIChallengesRewardContainer then return end
+    UpdateRewardButtonVisibility(true)
+    for i = MAX_DIFFICULTY_LEVEL, 1, -1 do
+        SpaUIChallengesRewardContainer["DifficultyText"..i]:SetText(tostring(i))
+        local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
+        SpaUIChallengesRewardContainer["RewardText"..i]:SetText(("%d(%d)"):format(endOfRunLevel,weeklyLevel))
+    end
+
     local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
     if keyStoneLevel then
         local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(keyStoneLevel) 
@@ -79,7 +86,6 @@ local function CreateRewardFrames()
 
     for i = MAX_DIFFICULTY_LEVEL, 1, -1 do
         RewardContainer["DifficultyText"..i] = RewardContainer:CreateFontString(RewardContainer,nil,i == MAX_REWARD_DIFFICULTY_LEVEL and "GameFontNormal" or"GameFontHighlight")
-        RewardContainer["DifficultyText"..i]:SetText(tostring(i))
         if i == MAX_DIFFICULTY_LEVEL then
             RewardContainer["DifficultyText"..i]:SetPoint("TOP",RewardContainer.DifficultyTextTitle,"BOTTOM",0,-RewardItemMargin)
         else
@@ -91,7 +97,6 @@ local function CreateRewardFrames()
         local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)  
         
         RewardContainer["RewardText"..i] = RewardContainer:CreateFontString(RewardContainer,nil,i == MAX_REWARD_DIFFICULTY_LEVEL and "GameFontNormal" or"GameFontHighlight")
-        RewardContainer["RewardText"..i]:SetText(("%d(%d)"):format(endOfRunLevel,weeklyLevel))
         if i == MAX_DIFFICULTY_LEVEL then
             RewardContainer["RewardText"..i]:SetPoint("TOP",RewardContainer.RewardTextTitle,"BOTTOM",0,-RewardItemMargin)
         else
@@ -116,10 +121,8 @@ local function CreateRewardFrames()
     RewardContainer.CurrentReward:SetPoint("TOP",RewardContainer["RewardText1"],"BOTTOM",0,-RewardItemMargin)
     RewardContainer.CurrentReward:SetPoint("LEFT",RewardContainer,"CENTER",0,0)
 
-    RewardContainer:SetScript("OnShow",function() UpdateRewardButtonVisibility(true) end)
+    RewardContainer:SetScript("OnShow",function() RewardContainer_OnShow() end)
     RewardContainer:SetScript("OnHide",function() UpdateRewardButtonVisibility(false) end)
-
-    ChallengesFrame:HookScript("OnShow",ShowCurrentLevelAndReward)
 end
 
 local function OnBlizzardChallengesUIInitialize(event,name)  
