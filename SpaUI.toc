@@ -1,15 +1,14 @@
 ## Interface: 90002
 ## Author: 绿毛龟12138
 ## Version: 1.0-alpha
-## Title: SpaUI
-## Title-zhCN: SpaUI
-## Notes: 常用的许多模块，收集自各个插件或论坛等
+## Title: |cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI
+## Notes: 常用的许多模块，大部分收集自各个插件或论坛等
 ## DefaultState: enabled
 
-localization.lua
+Localization.lua
 core.lua
 
-config\config.lua
+config\Config.lua
 
 #Features
 features\Castbar.lua
@@ -30,3 +29,4 @@ features\Reputation.lua
 features\RaidMarkerIcon.lua
 #修改自SUI
 features\FriendsColor.lua
+features\KeyStoneRewardLevel.lua

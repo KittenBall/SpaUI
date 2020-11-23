@@ -2,7 +2,10 @@ local addonName, SpaUI = ...
 
 local L = SpaUI.Localization
 
-print(L["addon_loaded_tip"]:format(addonName,GetAddOnMetadata(addonName, "Version")))
+local Debug = true
+
+print(L["addon_loaded_tip"]:format(addonName,
+                                   GetAddOnMetadata(addonName, "Version")))
 
 SlashCmdList["RELOADUI"] = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"
@@ -11,9 +14,20 @@ SpaUI.EventListener = CreateFrame("Frame", "SpaUIEventListener")
 SpaUI.EventListener:SetScript("OnEvent", function(self, event, ...)
     if SpaUI.Events and SpaUI.Events[event] then
         local len = #SpaUI.Events[event]
+        local consumed
         for i = 1, len do
-            if SpaUI.Events[event][i] then
-                SpaUI.Events[event][i](event, ...)
+            local handler = SpaUI.Events[event][i]
+            -- 如果事件处理函数返回真，则认为消费了该事件，将该处理函数移除
+            -- 这对某些满足条件后不再需要事件回调的函数很有用，提供了自动注销的功能
+            if handler and SpaUI.Events[event][i](event, ...) then
+                if not consumed then consumed = {} end
+                tinsert(consumed, handler)
+            end
+        end
+        -- 移除所有消费了的函数
+        if consumed then
+            for i = 1, #consumed do
+                SpaUI:UnregisterEvent(event, consumed[i])
             end
         end
     end
@@ -35,7 +49,7 @@ SpaUI.EventListener:SetScript("OnEvent", function(self, event, ...)
 
 end)
 
--- 注册事件
+-- 注册事件，handler返回的第一个值如果为真，则该监听会自动注销
 function SpaUI:RegisterEvent(event, handler)
     if not event or not handler or type(handler) ~= "function" then return end
     if not self.EventListener then return end
@@ -96,6 +110,16 @@ function SpaUI:UnregisterAllEvents()
     if not self.EventListener then return end
     self.EventListener:UnregisterAllEvents()
     self.Events = nil
+end
+
+function SpaUI:Log(msg)
+    if not Debug then return end
+    print(L["debug_format"]:format(addonName, msg))
+end
+
+function SpaUI:Log(msg, ...)
+    if not Debug then return end
+    print(L["debug_format"]:format(addonName, msg), ...)
 end
 
 -- 通过本地化的职业名称获取职业枚举 比如：法师->MAGE
