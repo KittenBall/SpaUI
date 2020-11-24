@@ -30,3 +30,6 @@ features\RaidMarkerIcon.lua
 #修改自SUI
 features\FriendsColor.lua
 features\KeyStoneRewardLevel.lua
+
+#Chat
+chat\ChatBar.lua
