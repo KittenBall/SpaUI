@@ -1,26 +1,20 @@
+local addonName,SpaUI = ...
 
-local GetChannelName_origin = GetChannelName
+local L = SpaUI.Localization
 local gusb = string.gsub
-
--- 大脚世界频道短频道名
-GetChannelName = function(source)
-    local id,name,instanceID,isCommunitiesChannel = GetChannelName_origin(source)
-    if not name then return id,name,instanceID,isCommunitiesChannel end
-    return id,name:gsub('大脚世界频道','世界'),instanceID,isCommunitiesChannel
-end
 
 local function ChangeChannelToWorld(editbox)
     local num = C_ChatInfo.GetNumActiveChannels()
     local channelTarget
     for i = 1, num do 
         local id,name = GetChannelName(i)
-        if name == "世界" then
+        if name == "大脚世界频道" then
             channelTarget = i
             break
         end
     end
     editbox:SetAttribute("chatType", "CHANNEL")
-    editbox:SetAttribute("channelTarget", channelTarget);
+    editbox:SetAttribute("channelTarget", channelTarget)
 end
 
 -- tab切换频道，当既在副本又在非副本的小队或团里时，切换逻辑会较生硬
