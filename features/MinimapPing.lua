@@ -4,43 +4,41 @@ local addonName, SpaUI = ...
 local L = SpaUI.Localization
 
 local function MinimapPingTipInitalize()
-    SpaUI.MinimapPingFrame = CreateFrame("Frame", "SpaUIMinimapPingFrame",
+    local MinimapPingFrame = CreateFrame("Frame", "SpaUIMinimapPingFrame",
                                          Minimap, "BackdropTemplate")
-    SpaUI.MinimapPingFrame:SetBackdrop({
+    MinimapPingFrame:SetBackdrop({
         bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
         insets = {left = 4, top = 4, right = 4, bottom = 4},
         edgeSize = 16,
         tile = true
     })
-    SpaUI.MinimapPingFrame:SetBackdropColor(0, 0, 0, 0.8)
-    SpaUI.MinimapPingFrame:SetBackdropBorderColor(0, 0, 0, 0.6)
-    SpaUI.MinimapPingFrame:SetHeight(20)
-    SpaUI.MinimapPingFrame:SetWidth(100)
-    SpaUI.MinimapPingFrame:SetPoint("TOP", Minimap, "TOP", 0, -10)
-    SpaUI.MinimapPingFrame:SetFrameStrata("HIGH")
-    SpaUI.MinimapPingFrame.name = SpaUI.MinimapPingFrame:CreateFontString(nil,
-                                                                          nil,
-                                                                          "GameFontNormalSmall")
-    SpaUI.MinimapPingFrame.name:SetAllPoints()
-    SpaUI.MinimapPingFrame:Hide()
+    MinimapPingFrame:SetBackdropColor(0, 0, 0, 0.8)
+    MinimapPingFrame:SetBackdropBorderColor(0, 0, 0, 0.6)
+    MinimapPingFrame:SetHeight(20)
+    MinimapPingFrame:SetWidth(100)
+    MinimapPingFrame:SetPoint("TOP", Minimap, "TOP", 0, -10)
+    MinimapPingFrame:SetFrameStrata("HIGH")
+    MinimapPingFrame.name = MinimapPingFrame:CreateFontString(nil, nil,
+                                                                    "GameFontNormalSmall")
+    MinimapPingFrame.name:SetAllPoints()
+    MinimapPingFrame:Hide()
 
-    SpaUI.MinimapPingFrame.animGroup =
-        SpaUI.MinimapPingFrame:CreateAnimationGroup()
-    SpaUI.MinimapPingFrame.animGroup.anim =
-        SpaUI.MinimapPingFrame.animGroup:CreateAnimation("Alpha")
-    SpaUI.MinimapPingFrame.animGroup:SetScript("OnFinished", function()
-        SpaUI.MinimapPingFrame:Hide()
+    MinimapPingFrame.animGroup = MinimapPingFrame:CreateAnimationGroup()
+    MinimapPingFrame.animGroup.anim =
+    MinimapPingFrame.animGroup:CreateAnimation("Alpha")
+    MinimapPingFrame.animGroup:SetScript("OnFinished", function()
+        SpaUIMinimapPingFrame:Hide()
     end)
-    SpaUI.MinimapPingFrame.animGroup.anim:SetFromAlpha(1)
-    SpaUI.MinimapPingFrame.animGroup.anim:SetToAlpha(0)
-    SpaUI.MinimapPingFrame.animGroup.anim:SetOrder(1)
-    SpaUI.MinimapPingFrame.animGroup.anim:SetDuration(2.5)
+    MinimapPingFrame.animGroup.anim:SetFromAlpha(1)
+    MinimapPingFrame.animGroup.anim:SetToAlpha(0)
+    MinimapPingFrame.animGroup.anim:SetOrder(1)
+    MinimapPingFrame.animGroup.anim:SetDuration(2.5)
 end
 
 local function OnMinimapPing(event, unit)
     if not unit then return end
-    if not SpaUI.MinimapPingFrame then MinimapPingTipInitalize() end
+    if not SpaUIMinimapPingFrame then MinimapPingTipInitalize() end
     local class = select(2, UnitClass(unit))
     local color
     if class then
@@ -50,7 +48,7 @@ local function OnMinimapPing(event, unit)
         color = GRAY_FONT_COLOR
     end
 
-    local name = GetUnitName(unit,false)
+    local name = GetUnitName(unit, false)
     if not name then return end
     -- 添加小队信息
     if IsInRaid() then
@@ -66,14 +64,13 @@ local function OnMinimapPing(event, unit)
     name = ("|cFF%02x%02x%02x%s|r"):format(color.r * 255, color.g * 255,
                                            color.b * 255, name)
 
-    SpaUI.MinimapPingFrame.name:SetFormattedText(name)
-    SpaUI.MinimapPingFrame:SetWidth(
-        SpaUI.MinimapPingFrame.name:GetStringWidth() + 14)
-    SpaUI.MinimapPingFrame:SetHeight(
-        SpaUI.MinimapPingFrame.name:GetStringHeight() + 10)
-    SpaUI.MinimapPingFrame.animGroup:Stop()
-    SpaUI.MinimapPingFrame:Show()
-    SpaUI.MinimapPingFrame.animGroup:Play()
+    SpaUIMinimapPingFrame.name:SetFormattedText(name)
+    SpaUIMinimapPingFrame:SetWidth(SpaUIMinimapPingFrame.name:GetStringWidth() +14)
+    SpaUIMinimapPingFrame:SetHeight(
+        SpaUIMinimapPingFrame.name:GetStringHeight() + 10)
+    SpaUIMinimapPingFrame.animGroup:Stop()
+    SpaUIMinimapPingFrame:Show()
+    SpaUIMinimapPingFrame.animGroup:Play()
 end
 
 SpaUI:RegisterEvent('MINIMAP_PING', OnMinimapPing)

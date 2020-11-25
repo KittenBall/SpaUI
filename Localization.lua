@@ -4,6 +4,7 @@ local LU = {}
 
 LU["addon_loaded_tip"] = "%s|cFF00BFFF%s|r已载入"
 LU["debug_format"] = "%sDebug:%s"
+LU["message_format"] = "%s:%s"
 -- config
 
 -- AutoRepair
@@ -37,6 +38,15 @@ LU["key_stone_reward_title_difficulty"] = "层数"
 LU["key_stone_reward_title_level"] = "奖励(低保)"
 LU["key_stone_current_owned"] = "当前"
 LU["key_stone_reward_tooltip"] = "显示史诗钥石奖励对照表"
+-- ChatBar
+LU["chat_bar_channel_say"] = "说"
+LU["chat_bar_channel_yell"] = "喊"
+LU["chat_bar_channel_party"] = "队"
+LU["chat_bar_channel_raid"] = "团"
+LU["chat_bar_channel_instance_chat"] = "副"
+LU["chat_bar_channel_guild"] = "公"
+LU["chat_bar_channel_world"] = "世"
+LU["chat_bar_outside"] = "频道切换栏似乎在屏幕外面？"
 
 -- 这里加入本地化
 SpaUI.Localization = {}

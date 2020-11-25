@@ -3,7 +3,8 @@ local addonName, SpaUI = ...
 
 local L = SpaUI.Localization
 
-local WayPointPositionButton = CreateFrame("Button", "WayPointPositionButton",
+local WayPointPositionButton = CreateFrame("Button",
+                                           "SpaUIWayPointPositionButton",
                                            WorldMapFrame.BorderFrame,
                                            "UIPanelButtonTemplate")
 WayPointPositionButton:SetWidth(65)
@@ -19,7 +20,7 @@ function WayPointPositionButton:OnShow()
         self:SetPoint('RIGHT', WorldMapFrame.BorderFrame.TitleBg, 'RIGHT', -20,
                       1)
     end
-    WayPointContainer:Close()
+    SpaUIWayPointContainer:Close()
 end
 WayPointPositionButton:SetScript("OnShow", WayPointPositionButton.OnShow)
 
@@ -48,19 +49,19 @@ function WayPointPositionButton.OnClick(widget, button, down)
         SpaUI:ShowUIError(L["mp_cannot_mark"])
         return
     end
-    if WayPointContainer then
-        if WayPointContainer:IsShown() then
-            local xl = WayPointContainer.CoordX:GetText():len()
-            local yl = WayPointContainer.CoordY:GetText():len()
+    if SpaUIWayPointContainer then
+        if SpaUIWayPointContainer:IsShown() then
+            local xl = SpaUIWayPointContainer.CoordX:GetText():len()
+            local yl = SpaUIWayPointContainer.CoordY:GetText():len()
             if xl ~= 0 and yl ~= 0 then
-                local x = WayPointContainer.CoordX:GetNumber()
-                local y = WayPointContainer.CoordY:GetNumber()
-                WayPointPositionButton:SetWayPoint(x, y)
+                local x = SpaUIWayPointContainer.CoordX:GetNumber()
+                local y = SpaUIWayPointContainer.CoordY:GetNumber()
+                SpaUIWayPointPositionButton:SetWayPoint(x, y)
             end
-            WayPointContainer:Close()
+            SpaUIWayPointContainer:Close()
         else
-            WayPointContainer:Show()
-            WayPointContainer.CoordX:SetFocus()
+            SpaUIWayPointContainer:Show()
+            SpaUIWayPointContainer.CoordX:SetFocus()
         end
     end
 end
@@ -71,9 +72,9 @@ WayPointPositionButton:SetScript("OnClick", WayPointPositionButton.OnClick)
 function WayPointPositionButton:OnMapChanged()
     local currentViewMapID = WorldMapFrame:GetMapID()
     if C_Map.CanSetUserWaypointOnMap(currentViewMapID) then
-        WayPointPositionButton:Enable()
+        SpaUIWayPointPositionButton:Enable()
     else
-        WayPointPositionButton:Disable()
+        SpaUIWayPointPositionButton:Disable()
     end
 end
 
@@ -93,72 +94,76 @@ function WayPointPositionButton:ShowTooltip(event)
 end
 
 WayPointPositionButton:SetScript("OnEnter", function(self)
-    WayPointPositionButton:ShowTooltip("OnEnter")
+    SpaUIWayPointPositionButton:ShowTooltip("OnEnter")
 end)
 WayPointPositionButton:SetScript("OnLeave", function(self)
-    WayPointPositionButton:ShowTooltip("OnLeave")
+    SpaUIWayPointPositionButton:ShowTooltip("OnLeave")
 end)
 
-local WayPointContainer = CreateFrame("Frame", "WayPointContainer",
+local WayPointContainer = CreateFrame("Frame", "SpaUIWayPointContainer",
                                       WorldMapFrame)
 WayPointContainer:SetFrameStrata("DIALOG")
 WayPointContainer:SetWidth(100)
 WayPointContainer:SetHeight(25)
 
 function WayPointContainer:ChangePointWithWorldMapFrameSize()
-    WayPointContainer:ClearAllPoints()
+    SpaUIWayPointContainer:ClearAllPoints()
     if WorldMapFrame:IsMaximized() then
-        WayPointContainer:SetPoint("RIGHT", WayPointPositionButton, "LEFT", -1, 0)
+        SpaUIWayPointContainer:SetPoint("RIGHT", WayPointPositionButton, "LEFT",
+                                        -1, 0)
     else
-        WayPointContainer:SetPoint("BOTTOM", WayPointPositionButton, "TOP", 0, 5)
+        SpaUIWayPointContainer:SetPoint("BOTTOM", WayPointPositionButton, "TOP",
+                                        0, 5)
     end
 end
 
-hooksecurefunc(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame,"Minimize",WayPointContainer.ChangePointWithWorldMapFrameSize)
-hooksecurefunc(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame,"Maximize",WayPointContainer.ChangePointWithWorldMapFrameSize)
+hooksecurefunc(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame, "Minimize",
+               WayPointContainer.ChangePointWithWorldMapFrameSize)
+hooksecurefunc(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame, "Maximize",
+               WayPointContainer.ChangePointWithWorldMapFrameSize)
 
 function WayPointContainer:Close()
-    WayPointContainer.CoordX:SetText("")
-    WayPointContainer.CoordX:ClearFocus()
-    WayPointContainer.CoordY:SetText("")
-    WayPointContainer.CoordY:ClearFocus()
-    WayPointContainer:Hide()
+    SpaUIWayPointContainer.CoordX:SetText("")
+    SpaUIWayPointContainer.CoordX:ClearFocus()
+    SpaUIWayPointContainer.CoordY:SetText("")
+    SpaUIWayPointContainer.CoordY:ClearFocus()
+    SpaUIWayPointContainer:Hide()
 end
 
 -- 输入tab
 local function OnCoordTabPressed(editBox)
-    if editBox == WayPointContainer.CoordX then
-        WayPointContainer.CoordX:ClearFocus()
-        WayPointContainer.CoordY:SetFocus()
+    if editBox == SpaUIWayPointContainer.CoordX then
+        SpaUIWayPointContainer.CoordX:ClearFocus()
+        SpaUIWayPointContainer.CoordY:SetFocus()
     else
-        WayPointContainer.CoordY:ClearFocus()
-        WayPointContainer.CoordX:SetFocus()
+        SpaUIWayPointContainer.CoordY:ClearFocus()
+        SpaUIWayPointContainer.CoordX:SetFocus()
     end
 end
 
 -- 输入回车
 local function OnCoordEnterPressed(editBox)
-    if editBox == WayPointContainer.CoordX then
+    if editBox == SpaUIWayPointContainer.CoordX then
         if editBox:GetText():len() ~= 0 then
-            WayPointContainer.CoordX:ClearFocus()
-            WayPointContainer.CoordY:SetFocus()
+            SpaUIWayPointContainer.CoordX:ClearFocus()
+            SpaUIWayPointContainer.CoordY:SetFocus()
         end
     else
-        if WayPointContainer.CoordX:GetText():len() ~= 0 and
-            WayPointContainer.CoordY:GetText():len() ~= 0 then
-            local x = WayPointContainer.CoordX:GetNumber()
-            local y = WayPointContainer.CoordY:GetNumber()
-            WayPointPositionButton:SetWayPoint(x, y)
-            WayPointContainer:Close()
-        elseif WayPointContainer.CoordY:GetText():len() ~= 0 and
-            WayPointContainer.CoordX:GetText():len() == 0 then
-            WayPointContainer.CoordY:ClearFocus()
-            WayPointContainer.CoordX:SetFocus()
+        if SpaUIWayPointContainer.CoordX:GetText():len() ~= 0 and
+            SpaUIWayPointContainer.CoordY:GetText():len() ~= 0 then
+            local x = SpaUIWayPointContainer.CoordX:GetNumber()
+            local y = SpaUIWayPointContainer.CoordY:GetNumber()
+            SpaUIWayPointPositionButton:SetWayPoint(x, y)
+            SpaUIWayPointContainer:Close()
+        elseif SpaUIWayPointContainer.CoordY:GetText():len() ~= 0 and
+            SpaUIWayPointContainer.CoordX:GetText():len() == 0 then
+            SpaUIWayPointContainer.CoordY:ClearFocus()
+            SpaUIWayPointContainer.CoordX:SetFocus()
         end
     end
 end
 
-WayPointContainer.CoordY = CreateFrame("EditBox", "WayPointCoordY",
+WayPointContainer.CoordY = CreateFrame("EditBox", "SpaUIWayPointCoordY",
                                        WayPointContainer, "InputBoxTemplate")
 WayPointContainer.CoordY:SetAutoFocus(false)
 WayPointContainer.CoordY:SetSize(30, 20)
@@ -168,7 +173,7 @@ WayPointContainer.CoordY:SetPoint("LEFT", WayPointContainer, "CENTER", 0, 0)
 WayPointContainer.CoordY:SetScript("OnTabPressed", OnCoordTabPressed)
 WayPointContainer.CoordY:SetScript("OnEnterPressed", OnCoordEnterPressed)
 
-WayPointContainer.CoordX = CreateFrame("EditBox", "WayPointCoordX",
+WayPointContainer.CoordX = CreateFrame("EditBox", "SpaUIWayPointCoordX",
                                        WayPointContainer, "InputBoxTemplate")
 WayPointContainer.CoordX:SetAutoFocus(false)
 WayPointContainer.CoordX:SetSize(30, 20)
