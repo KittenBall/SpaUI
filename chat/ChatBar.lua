@@ -89,12 +89,47 @@ end
 --------------
 
 local CHAT_BAR_MESSAGE_TYPES = {
-    "Say", "Yell", "Party", "Raid", "Instance_Chat", "Guild", "World", "Emote"
+    "Say", "Yell", "Party", "Raid", "Instance_Chat", "Guild", "World"
 }
 local CHAT_BAR_BUTTON_SIZE = 20
 local CHAT_BAR_BUTTON_MARGIN = 2
 local ALPHA_ENTER = 1.0
 local ALPHA_LEAVE = 0.3
+local CHANNEL_WORLD_DEFAULT_COLOR_R = 1
+local CHANNEL_WORLD_DEFAULT_COLOR_G = 0.75294125080109
+local CHANNEL_WORLD_DEFAULT_COLOR_B = 0.75294125080109
+
+-- 点击世界频道按钮
+local function OnWorldChannelButtonClick(button)
+    -- 找到大脚世界频道的频道id
+    local num = C_ChatInfo.GetNumActiveChannels()
+    local channelTarget
+    for i = 1, num do
+        local id, name = GetChannelName(i)
+        if name == BIG_FOOT_CHANNEL_NAME then
+            channelTarget = i
+            break
+        end
+    end
+    if channelTarget then
+        local chatTypeInfo = ChatTypeInfo["CHANNEL" .. channelTarget]
+        -- 改下世界频道的按钮颜色
+        if chatTypeInfo then
+            local text = SpaUI:formatColorTextByRGBPerc(
+                             L["chat_bar_channel_world"], chatTypeInfo.r,
+                             chatTypeInfo.g, chatTypeInfo.b)
+            button.Text:SetText(text)
+        end
+        local editbox = ChatFrame_OpenChat("", ChatFram1)
+        editbox:SetAttribute("chatType", "CHANNEL")
+        editbox:SetAttribute("channelTarget", channelTarget)
+        ChatEdit_UpdateHeader(editbox)
+    else
+        if GetLocale() == "zhCN" then
+            SpaUI:ShowMessage(L["chat_bar_channel_world_donot_join"])
+        end
+    end
+end
 
 -- 创建ChatBar按钮
 local function CreateChatBarButton(bar, index)
@@ -111,8 +146,6 @@ local function CreateChatBarButton(bar, index)
     bar[type].Text =
         bar[type]:CreateFontString(bar[type], nil, "GameFontNormal")
     bar[type].Text:SetPoint("CENTER", bar[type], "CENTER")
-    bar[type]:SetScript("OnClick",
-                        function(self) ChatFrame1EditBox:SetFocus() end)
     local chatTypeInfo = ChatTypeInfo[strupper(type)]
     if chatTypeInfo then
         -- 更改按钮颜色 设置点击事件
@@ -124,27 +157,13 @@ local function CreateChatBarButton(bar, index)
             ChatMenu_SetChatType(ChatFram1, strupper(type))
         end)
     elseif type == "World" then
-        -- 找到大脚世界频道的频道id
-        local num = C_ChatInfo.GetNumActiveChannels()
-        local channelTarget
-        for i = 1, num do
-            local id, name = GetChannelName(i)
-            if name == BIG_FOOT_CHANNEL_NAME then
-                channelTarget = i
-                break
-            end
-        end    
-        chatTypeInfo = ChatTypeInfo["CHANNEL" .. channelTarget]
         local text = SpaUI:formatColorTextByRGBPerc(
                          L["chat_bar_channel_" .. (strlower(type))],
-                         chatTypeInfo.r, chatTypeInfo.g, chatTypeInfo.b)
+                         CHANNEL_WORLD_DEFAULT_COLOR_R,
+                         CHANNEL_WORLD_DEFAULT_COLOR_G,
+                         CHANNEL_WORLD_DEFAULT_COLOR_B)
         bar[type].Text:SetText(text)
-        bar[type]:SetScript("OnClick", function(self)
-            local editbox = ChatFrame_OpenChat("",ChatFram1)
-            editbox:SetAttribute("chatType", "CHANNEL");
-            editbox:SetAttribute("channelTarget", channelTarget)
-            ChatEdit_UpdateHeader(editbox);
-        end)
+        bar[type]:SetScript("OnClick", OnWorldChannelButtonClick)
     end
 end
 
@@ -161,8 +180,8 @@ local function ChangeChatBarPoint(editbox)
         relativeTo = editbox
     end
 
-    if SpaUIChatBar.chatStyle ~= chatStyle or 
-        SpaUIChatBar.relativeTo ~=relativeTo then
+    if SpaUIChatBar.chatStyle ~= chatStyle or SpaUIChatBar.relativeTo ~=
+        relativeTo then
         SpaUIChatBar:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", 6, 2)
         SpaUIChatBar.chatStyle = chatStyle
         SpaUIChatBar.relativeTo = relativeTo
@@ -174,9 +193,7 @@ local function OnEditBoxStatusChange(editbox)
     if editbox:HasFocus() then
         SpaUIChatBar:Hide()
     else
-        if editbox:GetText():len() <=0 then
-            SpaUIChatBar:Show()
-        end
+        if editbox:GetText():len() <= 0 then SpaUIChatBar:Show() end
     end
 end
 
@@ -204,9 +221,7 @@ local function CreateChatBar()
     SetOrHookScript("OnEditFocusLost")
     SetOrHookScript("OnEditFocusGained")
 
-    if ChatBar:GetBottom() < 0 then
-        SpaUI:ShowMessage(L["chat_bar_outside"])
-    end
+    if ChatBar:GetBottom() < 0 then SpaUI:ShowMessage(L["chat_bar_outside"]) end
     return true
 end
 

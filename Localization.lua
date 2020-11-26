@@ -47,6 +47,7 @@ LU["chat_bar_channel_instance_chat"] = "副"
 LU["chat_bar_channel_guild"] = "公"
 LU["chat_bar_channel_world"] = "世"
 LU["chat_bar_outside"] = "频道切换栏似乎在屏幕外面？"
+LU["chat_bar_channel_world_donot_join"] = "你还没有加入大脚世界频道"
 
 -- 这里加入本地化
 SpaUI.Localization = {}

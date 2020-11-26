@@ -33,3 +33,4 @@ features\KeyStoneRewardLevel.lua
 
 #Chat
 chat\ChatBar.lua
+chat\ChatEmote.lua
