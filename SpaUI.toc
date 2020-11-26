@@ -31,6 +31,8 @@ features\RaidMarkerIcon.lua
 features\FriendsColor.lua
 features\KeyStoneRewardLevel.lua
 
-#Chat
+#Chat 参考了TinyChat
 chat\ChatBar.lua
+#修改自SimpleChat
 chat\ChatEmote.lua
+chat\ChatCopy.lua

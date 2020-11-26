@@ -95,24 +95,28 @@ local CHAT_BAR_BUTTON_SIZE = 20
 local CHAT_BAR_BUTTON_MARGIN = 2
 local ALPHA_ENTER = 1.0
 local ALPHA_LEAVE = 0.3
+local SCALE_PRESS = 1.25
+local SCALE_UP = 1
 local CHANNEL_WORLD_DEFAULT_COLOR_R = 1
 local CHANNEL_WORLD_DEFAULT_COLOR_G = 0.75294125080109
 local CHANNEL_WORLD_DEFAULT_COLOR_B = 0.75294125080109
 
--- 点击世界频道按钮
-local function OnWorldChannelButtonClick(button)
-    -- 找到大脚世界频道的频道id
+-- 找到大脚世界频道的频道id
+local function GetWorldChannelID()
     local num = C_ChatInfo.GetNumActiveChannels()
-    local channelTarget
     for i = 1, num do
         local id, name = GetChannelName(i)
         if name == BIG_FOOT_CHANNEL_NAME then
-            channelTarget = i
-            break
+            return i
         end
     end
+end
+
+-- 点击世界频道按钮
+local function OnWorldChannelButtonClick(button)
+    local channelTarget = GetWorldChannelID()
     if channelTarget then
-        local chatTypeInfo = ChatTypeInfo["CHANNEL" .. channelTarget]
+        local chatTypeInfo = ChatTypeInfo["CHANNEL"..channelTarget]
         -- 改下世界频道的按钮颜色
         if chatTypeInfo then
             local text = SpaUI:formatColorTextByRGBPerc(
@@ -157,11 +161,14 @@ local function CreateChatBarButton(bar, index)
             ChatMenu_SetChatType(ChatFram1, strupper(type))
         end)
     elseif type == "World" then
+        local channelTarget = GetWorldChannelID()
+        local chatTypeInfo = channelTarget and ChatTypeInfo["CHANNEL"..channelTarget] or nil
+        local r = chatTypeInfo and chatTypeInfo.r or CHANNEL_WORLD_DEFAULT_COLOR_R
+        local g = chatTypeInfo and chatTypeInfo.g or CHANNEL_WORLD_DEFAULT_COLOR_G
+        local b = chatTypeInfo and chatTypeInfo.b or CHANNEL_WORLD_DEFAULT_COLOR_B
+        -- 世界频道按钮
         local text = SpaUI:formatColorTextByRGBPerc(
-                         L["chat_bar_channel_" .. (strlower(type))],
-                         CHANNEL_WORLD_DEFAULT_COLOR_R,
-                         CHANNEL_WORLD_DEFAULT_COLOR_G,
-                         CHANNEL_WORLD_DEFAULT_COLOR_B)
+                         L["chat_bar_channel_" .. (strlower(type))],r,g,b)
         bar[type].Text:SetText(text)
         bar[type]:SetScript("OnClick", OnWorldChannelButtonClick)
     end
@@ -182,7 +189,7 @@ local function ChangeChatBarPoint(editbox)
 
     if SpaUIChatBar.chatStyle ~= chatStyle or SpaUIChatBar.relativeTo ~=
         relativeTo then
-        SpaUIChatBar:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", 6, 2)
+        SpaUIChatBar:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", 0, 0)
         SpaUIChatBar.chatStyle = chatStyle
         SpaUIChatBar.relativeTo = relativeTo
     end
@@ -194,6 +201,7 @@ local function OnEditBoxStatusChange(editbox)
         SpaUIChatBar:Hide()
     else
         if editbox:GetText():len() <= 0 then SpaUIChatBar:Show() end
+        SpaUI:CloseEmoteTable()
     end
 end
 
@@ -203,6 +211,26 @@ local function SetOrHookScript(scriptType)
     else
         ChatFrame1EditBox:SetScript(scriptType, OnEditBoxStatusChange)
     end
+end
+
+-- 生成表情按钮
+local function CreateChatEmoteButton()
+    if not SpaUIChatBar then return end
+    local ChatEmoteButton = CreateFrame("Button", "SpaUIChatEmoteButton", UIParent)
+    ChatEmoteButton:SetWidth(CHAT_BAR_BUTTON_SIZE)
+    ChatEmoteButton:SetHeight(CHAT_BAR_BUTTON_SIZE)
+    ChatEmoteButton:SetPoint("RIGHT", SpaUIChatBar, "LEFT", -CHAT_BAR_BUTTON_MARGIN, 0)
+    ChatEmoteButton:SetAlpha(ALPHA_LEAVE)
+    ChatEmoteButton:SetNormalTexture(
+        "Interface\\Addons\\SpaUI\\chat\\emojis\\greet")
+    ChatEmoteButton:SetScript("OnEnter", function(self) self:SetAlpha(ALPHA_ENTER) end)
+    ChatEmoteButton:SetScript("OnLeave", function(self) self:SetAlpha(ALPHA_LEAVE) end)
+    ChatEmoteButton:SetScript("OnMouseUp", function(self) self:SetScale(SCALE_UP) end)
+    ChatEmoteButton:SetScript("OnMouseDown",function(self) self:SetScale(SCALE_PRESS) end)
+
+    local ChatEmoteTable = SpaUI:GetEmoteTable()
+    ChatEmoteTable:SetPoint("BOTTOMLEFT",ChatEmoteButton,"TOPRIGHT",3,3)
+    ChatEmoteButton:SetScript("OnClick",function(self) SpaUI:ToggleEmoteTable() end)
 end
 
 -- 创建ChatBar
@@ -222,6 +250,8 @@ local function CreateChatBar()
     SetOrHookScript("OnEditFocusGained")
 
     if ChatBar:GetBottom() < 0 then SpaUI:ShowMessage(L["chat_bar_outside"]) end
+
+    CreateChatEmoteButton()
     return true
 end
 
