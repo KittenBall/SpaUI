@@ -1,6 +1,9 @@
 local addonName, SpaUI = ...
 local L = SpaUI.Localization
 
+local ALPHA_ENTER = 0.4
+local ALPHA_LEAVE = 0.2
+
 local function CreateCopyFrame()
     local CopyFrame = CreateFrame("Frame", "SpaUIEmoteTableFrame",
     UIParent, "BasicFrameTemplateWithInset")
@@ -12,11 +15,13 @@ local function CreateCopyButton()
     CopyButton:SetWidth(18)
     CopyButton:SetHeight(18)
     -- 图标太亮了，降点透明度
-    CopyButton:SetAlpha(0.05)
+    CopyButton:SetAlpha(ALPHA_LEAVE)
     CopyButton:SetPoint("TOPRIGHT",ChatFrame1,"TOPRIGHT")
     CopyButton:SetNormalTexture("Interface\\Addons\\SpaUI\\media\\copy")
     CopyButton:SetHighlightTexture("Interface\\Addons\\SpaUI\\media\\copy_highlight")
     CopyButton:SetPushedTexture("Interface\\Addons\\SpaUI\\media\\copy_pressed")
+    CopyButton:SetScript("OnEnter",function(self) self:SetAlpha(ALPHA_ENTER) end)
+    CopyButton:SetScript("OnLeave",function(self) self:SetAlpha(ALPHA_LEAVE) end)
     return true
 end
 
