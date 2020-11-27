@@ -9,12 +9,14 @@ end
 -- 创建复制按钮
 local function CreateCopyButton()
     local CopyButton = CreateFrame("Button","SpaUICopyButton",UIParent)
-    CopyButton:SetWidth(16)
-    CopyButton:SetHeight(16)
-    CopyButton:SetAlpha(0.3)
+    CopyButton:SetWidth(18)
+    CopyButton:SetHeight(18)
+    -- 图标太亮了，降点透明度
+    CopyButton:SetAlpha(0.05)
     CopyButton:SetPoint("TOPRIGHT",ChatFrame1,"TOPRIGHT")
     CopyButton:SetNormalTexture("Interface\\Addons\\SpaUI\\media\\copy")
     CopyButton:SetHighlightTexture("Interface\\Addons\\SpaUI\\media\\copy_highlight")
+    CopyButton:SetPushedTexture("Interface\\Addons\\SpaUI\\media\\copy_pressed")
     return true
 end
 

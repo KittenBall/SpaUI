@@ -34,5 +34,5 @@ features\KeyStoneRewardLevel.lua
 #Chat 参考了TinyChat
 chat\ChatBar.lua
 #修改自SimpleChat
-chat\ChatEmote.lua
+# chat\ChatEmote.lua
 chat\ChatCopy.lua
