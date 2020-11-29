@@ -62,13 +62,13 @@ local function CreateRewardFrames()
     ChallengesFrame.RewardButton:SetScript("OnLeave", function(self)
         ShowTooltip("OnLeave")
     end)
+    ChallengesFrame.RewardButton:Hide()
 
     local RewardContainer = CreateFrame("Frame","SpaUIChallengesRewardContainer",ChallengesFrame,"BasicFrameTemplateWithInset")
     RewardContainer:SetWidth(200)
     RewardContainer:SetPoint("LEFT",ChallengesFrame,"RIGHT",0,0)
     RewardContainer:SetPoint("TOP",ChallengesFrame,"TOP",0,0)
     RewardContainer:SetPoint("BOTTOM",ChallengesFrame,"BOTTOM",0,0)
-    RewardContainer:Hide()
 
     RewardContainer.TitleText:SetText(L["key_stone_reward_title"])
 

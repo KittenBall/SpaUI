@@ -5,7 +5,8 @@ CastingBarFrame.timer:SetFont("Fonts\\ARIALN.ttf", 8, "THINOUTLINE")
 if PLAYER_FRAME_CASTBARS_SHOWN then
     CastingBarFrame.timer:SetPoint("LEFT", CastingBarFrame, "RIGHT", 1, 0)
 else
-    CastingBarFrame.timer:SetPoint("TOPRIGHT", CastingBarFrame, "BOTTOMRIGHT", 0, -2)
+    CastingBarFrame.timer:SetPoint("TOPRIGHT", CastingBarFrame, "BOTTOMRIGHT",
+                                   0, -2)
 end
 CastingBarFrame.update = .1
 CastingBarFrame.lag = CastingBarFrame:CreateTexture(nil, "BACKGROUND")
@@ -15,13 +16,13 @@ CastingBarFrame.lag:SetHeight(CastingBarFrame:GetHeight())
 CastingBarFrame.lag:SetColorTexture(1, 0, 0, 1)
 
 -- 目标
-TargetFrameSpellBar.timer = CastingBarFrame:CreateFontString(nil, nil)
+TargetFrameSpellBar.timer = TargetFrameSpellBar:CreateFontString(nil, nil)
 TargetFrameSpellBar.timer:SetFont("Fonts\\ARIALN.ttf", 8, "THINOUTLINE")
 TargetFrameSpellBar.timer:SetPoint("LEFT", TargetFrameSpellBar, "RIGHT", 1, 0)
 TargetFrameSpellBar.update = .1
 
 -- 焦点
-FocusFrameSpellBar.timer = CastingBarFrame:CreateFontString(nil, nil)
+FocusFrameSpellBar.timer = FocusFrameSpellBar:CreateFontString(nil, nil)
 FocusFrameSpellBar.timer:SetFont("Fonts\\ARIALN.ttf", 8, "THINOUTLINE")
 FocusFrameSpellBar.timer:SetPoint("LEFT", FocusFrameSpellBar, "RIGHT", 1, 0)
 FocusFrameSpellBar.update = .1
@@ -29,8 +30,8 @@ FocusFrameSpellBar.update = .1
 local function CastingBarFrame_OnUpdate_Hook(self, elapsed)
     if not self.timer then return end
     if self.update and self.update < elapsed then
-        if self.casting then
-            if self.lag then
+        if self.casting or self.channeling then
+            if self.lag and self.casting then
                 local _, _, world = GetNetStats()
                 if world and world > 0 then
                     local min, max = self:GetMinMaxValues();
@@ -44,14 +45,11 @@ local function CastingBarFrame_OnUpdate_Hook(self, elapsed)
                 else
                     self.lag:SetWidth(0)
                 end
+            elseif self.lag then
+                self.lag:SetWidth(0)
             end
-            self.timer:SetText(format("%.1f/%.1f",
-                                      max(self.maxValue - self.value, 0),
-                                      self.maxValue))
-        elseif self.channeling then
             self.timer:SetText(format("%.1f/%.1f", max(self.value, 0),
                                       self.maxValue))
-            if self.lag then self.lag:SetWidth(0) end
         else
             self.timer:SetText("")
             if self.lag then self.lag:SetWidth(0) end
@@ -76,7 +74,8 @@ end
 local function PlayerFrame_DetachCastBar_OnHook()
     if not CastingBarFrame.timer then return end
     CastingBarFrame.timer:ClearAllPoints()
-    CastingBarFrame.timer:SetPoint("TOPRIGHT", CastingBarFrame, "BOTTOMRIGHT", 0, -2)
+    CastingBarFrame.timer:SetPoint("TOPRIGHT", CastingBarFrame, "BOTTOMRIGHT",
+                                   0, -2)
 end
 
 hooksecurefunc("PlayerFrame_AttachCastBar", PlayerFrame_AttachCastBar_OnHook)

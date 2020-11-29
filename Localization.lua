@@ -2,13 +2,14 @@ local addonName, SpaUI = ...
 -- 通用字符串
 local LU = {}
 
-LU["addon_loaded_tip"] = "%s|cFF00BFFF%s|r已载入"
-LU["debug_format"] = "%sDebug:%s"
-LU["message_format"] = "%s:%s"
+LU["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
+LU["addon_loaded_tip"] = LU["addon_name"]..":|cFF00BFFF%s|r 已载入"
+LU["debug_format"] = LU["addon_name"].." Debug:%s"
+LU["message_format"] = LU["addon_name"]..":%s"
 -- config
 
 -- AutoRepair
-LU["auto_repair_guild_cost"] = "|cfff07100公会修理花费: %s|r"
+LU["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
 LU["auto_repair_cost"] = "|cffead000修理花费: %s|r"
 LU["auto_repair_no_money"] = "你没钱，穷逼！"
 -- AutoSell

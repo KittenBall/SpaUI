@@ -4,8 +4,7 @@ local L = SpaUI.Localization
 
 local Debug = true
 
-print(L["addon_loaded_tip"]:format(addonName,
-                                   GetAddOnMetadata(addonName, "Version")))
+print(L["addon_loaded_tip"]:format(GetAddOnMetadata(addonName, "Version")))
 
 SlashCmdList["RELOADUI"] = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"
@@ -114,12 +113,12 @@ end
 
 function SpaUI:Log(msg)
     if not Debug then return end
-    print(L["debug_format"]:format(addonName, msg))
+    print(L["debug_format"]:format(msg))
 end
 
 function SpaUI:Log(msg, ...)
     if not Debug then return end
-    print(L["debug_format"]:format(addonName, msg), ...)
+    print(L["debug_format"]:format(msg), ...)
 end
 
 -- 通过本地化的职业名称获取职业枚举 比如：法师->MAGE
@@ -140,7 +139,7 @@ end
 
 -- 显示消息
 function SpaUI:ShowMessage(string)
-    print(L["message_format"]:format(addonName,string))
+    print(L["message_format"]:format(string))
 end
 
 -- RGB颜色转16进制

@@ -29,8 +29,10 @@ local emotes = {
     {L["chat_emote_lovely"], [=[Interface\Addons\SpaUI\chat\emojis\Cutie]=]},
     {L["chat_emote_despise"], [=[Interface\Addons\SpaUI\chat\emojis\Despise]=]},
     {L["chat_emote_dream"], [=[Interface\Addons\SpaUI\chat\emojis\Dreamsmile]=]},
-    {L["chat_emote_embarrassed"], [=[Interface\Addons\SpaUI\chat\emojis\Embarrass]=]},
-    {L["chat_emote_evil"], [=[Interface\Addons\SpaUI\chat\emojis\Evil]=]},
+    {
+        L["chat_emote_embarrassed"],
+        [=[Interface\Addons\SpaUI\chat\emojis\Embarrass]=]
+    }, {L["chat_emote_evil"], [=[Interface\Addons\SpaUI\chat\emojis\Evil]=]},
     {L["chat_emote_excited"], [=[Interface\Addons\SpaUI\chat\emojis\Excited]=]},
     {L["chat_emote_dizzy"], [=[Interface\Addons\SpaUI\chat\emojis\Faint]=]},
     {L["chat_emote_fight"], [=[Interface\Addons\SpaUI\chat\emojis\Fight]=]},
@@ -39,39 +41,60 @@ local emotes = {
     {L["chat_emote_frown"], [=[Interface\Addons\SpaUI\chat\emojis\Frown]=]},
     {L["chat_emote_salute"], [=[Interface\Addons\SpaUI\chat\emojis\Greet]=]},
     {L["chat_emote_grimace"], [=[Interface\Addons\SpaUI\chat\emojis\Grimace]=]},
-    {L["chat_emote_barking_teeth"], [=[Interface\Addons\SpaUI\chat\emojis\Growl]=]},
-    {L["chat_emote_happy"], [=[Interface\Addons\SpaUI\chat\emojis\Happy]=]},
+    {
+        L["chat_emote_barking_teeth"],
+        [=[Interface\Addons\SpaUI\chat\emojis\Growl]=]
+    }, {L["chat_emote_happy"], [=[Interface\Addons\SpaUI\chat\emojis\Happy]=]},
     {L["chat_emote_heart"], [=[Interface\Addons\SpaUI\chat\emojis\Heart]=]},
     {L["chat_emote_fear"], [=[Interface\Addons\SpaUI\chat\emojis\Horror]=]},
     {L["chat_emote_sick"], [=[Interface\Addons\SpaUI\chat\emojis\Ill]=]},
-    {L["chat_emote_innocent"], [=[Interface\Addons\SpaUI\chat\emojis\Innocent]=]},
+    {
+        L["chat_emote_innocent"],
+        [=[Interface\Addons\SpaUI\chat\emojis\Innocent]=]
+    },
     {L["chat_emote_kung_fu"], [=[Interface\Addons\SpaUI\chat\emojis\Kongfu]=]},
     {L["chat_emote_anthomaniac"], [=[Interface\Addons\SpaUI\chat\emojis\Love]=]},
     {L["chat_emote_mail"], [=[Interface\Addons\SpaUI\chat\emojis\Mail]=]},
     {L["chat_emote_makeup"], [=[Interface\Addons\SpaUI\chat\emojis\Makeup]=]},
     {L["chat_emote_mario"], [=[Interface\Addons\SpaUI\chat\emojis\Mario]=]},
-    {L["chat_emote_meditation"], [=[Interface\Addons\SpaUI\chat\emojis\Meditate]=]},
+    {
+        L["chat_emote_meditation"],
+        [=[Interface\Addons\SpaUI\chat\emojis\Meditate]=]
+    },
     {L["chat_emote_poor"], [=[Interface\Addons\SpaUI\chat\emojis\Miserable]=]},
     {L["chat_emote_good"], [=[Interface\Addons\SpaUI\chat\emojis\Okay]=]},
     {L["chat_emote_beautiful"], [=[Interface\Addons\SpaUI\chat\emojis\Pretty]=]},
     {L["chat_emote_spit"], [=[Interface\Addons\SpaUI\chat\emojis\Puke]=]},
-    {L["chat_emote_shake_hands"], [=[Interface\Addons\SpaUI\chat\emojis\Shake]=]},
-    {L["chat_emote_yell"], [=[Interface\Addons\SpaUI\chat\emojis\Shout]=]},
+    {
+        L["chat_emote_shake_hands"],
+        [=[Interface\Addons\SpaUI\chat\emojis\Shake]=]
+    }, {L["chat_emote_yell"], [=[Interface\Addons\SpaUI\chat\emojis\Shout]=]},
     {L["chat_emote_shut_up"], [=[Interface\Addons\SpaUI\chat\emojis\Shuuuu]=]},
     {L["chat_emote_shy"], [=[Interface\Addons\SpaUI\chat\emojis\Shy]=]},
     {L["chat_emote_sleep"], [=[Interface\Addons\SpaUI\chat\emojis\Sleep]=]},
     {L["chat_emote_smile"], [=[Interface\Addons\SpaUI\chat\emojis\Smile]=]},
-    {L["chat_emote_surprised"], [=[Interface\Addons\SpaUI\chat\emojis\Suprise]=]},
-    {L["chat_emote_failure"], [=[Interface\Addons\SpaUI\chat\emojis\Surrender]=]},
-    {L["chat_emote_sweat"], [=[Interface\Addons\SpaUI\chat\emojis\Sweat]=]},
+    {
+        L["chat_emote_surprised"],
+        [=[Interface\Addons\SpaUI\chat\emojis\Suprise]=]
+    },
+    {
+        L["chat_emote_failure"],
+        [=[Interface\Addons\SpaUI\chat\emojis\Surrender]=]
+    }, {L["chat_emote_sweat"], [=[Interface\Addons\SpaUI\chat\emojis\Sweat]=]},
     {L["chat_emote_tears"], [=[Interface\Addons\SpaUI\chat\emojis\Tear]=]},
     {L["chat_emote_tragedy"], [=[Interface\Addons\SpaUI\chat\emojis\Tears]=]},
     {L["chat_emote_thinking"], [=[Interface\Addons\SpaUI\chat\emojis\Think]=]},
     {L["chat_emote_snicker"], [=[Interface\Addons\SpaUI\chat\emojis\Titter]=]},
     {L["chat_emote_wretched"], [=[Interface\Addons\SpaUI\chat\emojis\Ugly]=]},
     {L["chat_emote_victory"], [=[Interface\Addons\SpaUI\chat\emojis\Victory]=]},
-    {L["chat_emote_lei_feng"], [=[Interface\Addons\SpaUI\chat\emojis\Volunteer]=]},
-    {L["chat_emote_injustice"], [=[Interface\Addons\SpaUI\chat\emojis\Wronged]=]}
+    {
+        L["chat_emote_lei_feng"],
+        [=[Interface\Addons\SpaUI\chat\emojis\Volunteer]=]
+    },
+    {
+        L["chat_emote_injustice"],
+        [=[Interface\Addons\SpaUI\chat\emojis\Wronged]=]
+    }
 }
 
 -- 表情解析规则
@@ -104,7 +127,7 @@ function CreateEmoteTableFrame()
     local EmoteTableFrame = CreateFrame("Frame", "SpaUIEmoteTableFrame",
                                         UIParent, "BasicFrameTemplateWithInset")
     -- 响应Esc                                    
-    tinsert(UISpecialFrames,EmoteTableFrame:GetName())                                    
+    tinsert(UISpecialFrames, EmoteTableFrame:GetName())
     EmoteTableFrame.Container = CreateFrame("Frame",
                                             "SpaUIEmoteTableFrameContainer",
                                             EmoteTableFrame)
@@ -124,13 +147,14 @@ function CreateEmoteTableFrame()
         col = floor((i - 1) % EMOTE_RAW_SIZE)
         text = emotes[i][1]
         texture = emotes[i][2]
+
         icon = CreateFrame("Button", format("SpaUIEmoteIcon%d", i),
                            EmoteTableFrame.Container)
         icon:SetWidth(EMOTE_SIZE)
         icon:SetHeight(EMOTE_SIZE)
         icon.text = text
         icon:SetNormalTexture(texture)
-        icon:SetHighlightTexture("Interface\\Buttons\\CheckButtonHilight")
+        icon:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
         icon:Show()
         icon:SetPoint("LEFT", EmoteTableFrame.Container, "LEFT",
                       col * (EMOTE_SIZE + EMOTE_SIZE_MARGIN), 0)
