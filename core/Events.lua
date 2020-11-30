@@ -1,15 +1,8 @@
-local addonName, SpaUI = ...
+local addonName,SpaUI = ...
 
 local L = SpaUI.Localization
 
-local Debug = true
-
-print(L["addon_loaded_tip"]:format(GetAddOnMetadata(addonName, "Version")))
-
-SlashCmdList["RELOADUI"] = function() ReloadUI() end
-SLASH_RELOADUI1 = "/rl"
-
-SpaUI.EventListener = CreateFrame("Frame", "SpaUIEventListener")
+-- 事件收发
 SpaUI.EventListener:SetScript("OnEvent", function(self, event, ...)
     if SpaUI.Events and SpaUI.Events[event] then
         local len = #SpaUI.Events[event]
@@ -110,70 +103,3 @@ function SpaUI:UnregisterAllEvents()
     self.EventListener:UnregisterAllEvents()
     self.Events = nil
 end
-
-function SpaUI:Log(msg)
-    if not Debug then return end
-    print(L["debug_format"]:format(msg))
-end
-
-function SpaUI:Log(msg, ...)
-    if not Debug then return end
-    print(L["debug_format"]:format(msg), ...)
-end
-
--- 通过本地化的职业名称获取职业枚举 比如：法师->MAGE
-function SpaUI:GetClassFileByLocalizedClassName(localizedClassName)
-    if not SpaUI.ClassFileToLocalizedClassMap then
-        SpaUI.ClassFileToLocalizedClassMap = {}
-        for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-            SpaUI.ClassFileToLocalizedClassMap[v] = k
-        end
-    end
-    return SpaUI.ClassFileToLocalizedClassMap[localizedClassName]
-end
-
--- 显示红字错误
-function SpaUI:ShowUIError(string)
-    UIErrorsFrame:AddMessage(string, 1.0, 0.0, 0.0, 1, 3)
-end
-
--- 显示消息
-function SpaUI:ShowMessage(string)
-    print(L["message_format"]:format(string))
-end
-
--- RGB颜色转16进制
-function SpaUI:RGBToHex(r, g, b)
-    r = r <= 255 and r >= 0 and r or 0
-    g = g <= 255 and g >= 0 and g or 0
-    b = b <= 255 and b >= 0 and b or 0
-    return string.format("%02x%02x%02x", r, g, b)
-end
-
--- 字符串颜色格式化
--- return non nil
-function SpaUI:formatColorTextByRGB(text, r, g, b)
-    if not text then return "" end
-    r = r <= 255 and r >= 0 and r or 0
-    g = g <= 255 and g >= 0 and g or 0
-    b = b <= 255 and b >= 0 and b or 0
-    return string.format("\124cff%02x%02x%02x%s\124r", r, g, b, text)
-end
-
--- RGB颜色(百分比)转16进制
-function SpaUI:RGBPercToHex(r, g, b)
-    r = r <= 1 and r >= 0 and r or 0
-    g = g <= 1 and g >= 0 and g or 0
-    b = b <= 1 and b >= 0 and b or 0
-    return string.format("%02x%02x%02x", r * 255, g * 255, b * 255)
-end
-
--- 字符串颜色格式化
--- return non nil
-function SpaUI:formatColorTextByRGBPerc(text, r, g, b)
-    if not text then return "" end
-    r = r <= 1 and r >= 0 and r or 0
-    g = g <= 1 and g >= 0 and g or 0
-    b = b <= 1 and b >= 0 and b or 0
-    return string.format("\124cff%02x%02x%02x%s\124r", r * 255, g * 255, b * 255 , text)
-end 

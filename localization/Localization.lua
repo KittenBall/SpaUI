@@ -7,7 +7,8 @@ LU["addon_loaded_tip"] = LU["addon_name"]..":|cFF00BFFF%s|r 已载入"
 LU["debug_format"] = LU["addon_name"].." Debug:%s"
 LU["message_format"] = LU["addon_name"]..":%s"
 -- config
-
+LU["config_addon_version"] = "|cFF00BFFF%s|r"
+LU["config_addon_author"] = "作者：|cFFADD8E6%s|r"
 -- AutoRepair
 LU["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
 LU["auto_repair_cost"] = "|cffead000修理花费: %s|r"
@@ -112,12 +113,9 @@ LU["chat_emote_victory"] = "{胜利}"
 LU["chat_emote_lei_feng"] = "{雷锋}"
 LU["chat_emote_injustice"] = "{委屈}"
 
--- 这里加入本地化
 SpaUI.Localization = {}
-local L = SpaUI.Localization
--- 占位
 
-setmetatable(L, {
+setmetatable(SpaUI.Localization, {
     __index = function(self, key)
         local value = LU[key]
         self[key] = value
