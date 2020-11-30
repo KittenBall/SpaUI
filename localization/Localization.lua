@@ -30,6 +30,8 @@ LU["reputation_paragon"] = "巅峰x%d"
 LU["reputation_paragon_no_history"] = "巅峰"
 -- MinimapPing
 LU["minimap_ping_who_group"] = "(%d队)%s"
+-- FriendsList
+LU["friends_list_area"] = "|cFF00BFFF%s|r"
 -- UnitFrames
 LU["uf_spell_source_prefix"] = "法术来源："
 LU["uf_buff_source_prefix"] = "增益来源："

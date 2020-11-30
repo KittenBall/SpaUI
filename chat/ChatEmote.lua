@@ -77,8 +77,6 @@ local emotes = {
 -- 表情解析规则
 local EMOTE_RULE = format("\124T%%s:%d\124t", max(floor(select(2, SELECTED_CHAT_FRAME:GetFont())),EMOTE_SIZE))
 
-local EMOTE_CHAT_BUBBLE_RULE = format("\124T%%s:%d\124t", EMOTE_SIZE)     
-
 local function ReplaceEmote(msg)
     for i = 1, #emotes do
         if msg == emotes[i][1] then
@@ -182,6 +180,17 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", ChatEmoteFilter)
 -- 解析社区聊天内容
 ChatFrame_AddMessageEventFilter("CHAT_MSG_COMMUNITIES_CHANNEL", ChatEmoteFilter)
 
+local EMOTE_CHAT_BUBBLE_RULE = format("\124T%%s:%d\124t", EMOTE_SIZE)     
+
+local function ReplaceBubbleEmote(msg)
+    for i = 1, #emotes do
+        if msg == emotes[i][1] then
+            return format(EMOTE_CHAT_BUBBLE_RULE,emotes[i][2])
+        end
+    end
+    return msg
+end
+
 -- 替换聊天气泡表情
 local function ReplaceChatBubbleEmote()
     local chatBubbles = C_ChatBubbles.GetAllChatBubbles()
@@ -190,7 +199,7 @@ local function ReplaceChatBubbleEmote()
             frame = v:GetChildren()
             if (frame and frame.String) then
                 text = frame.String:GetText()
-                after = text:gsub("%{.-%}", EMOTE_RULE)
+                after = text:gsub("%{.-%}", ReplaceBubbleEmote)
                 if (after ~= text) then
                     return frame.String:SetText(after)
                 end
@@ -200,7 +209,13 @@ end
 
 -- 聊天气泡消息接收监听
 local function OnChatBubblesMsgReceived()
-    -- C_Timer.NewTicker(0.15,ReplaceChatBubbleEmote)
+    if SpaUI.ChatBubbleTextReplaceLooper then
+        SpaUI.ChatBubbleTextReplaceLooper:Cancel()
+        SpaUI.ChatBubbleTextReplaceLooper = nil
+    end
+    ReplaceChatBubbleEmote()
+    -- 循环30次 即3秒
+    SpaUI.ChatBubbleTextReplaceLooper = C_Timer.NewTicker(0.1,ReplaceChatBubbleEmote,30)
 end
 
 -- 聊天气泡设置变更回调

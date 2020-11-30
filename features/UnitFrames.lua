@@ -9,28 +9,28 @@ PlayerHitIndicator.SetText = function() end
 PetHitIndicator:SetText(nil)
 PetHitIndicator.SetText = function() end
 
--- 血条和名字职业染色
-local UnitIsPlayer, UnitIsConnected, UnitClass, RAID_CLASS_COLORS =
-    UnitIsPlayer, UnitIsConnected, UnitClass, RAID_CLASS_COLORS
-local _, class, c
+-- 血条职业染色
+-- local UnitIsPlayer, UnitIsConnected, UnitClass, RAID_CLASS_COLORS =
+--     UnitIsPlayer, UnitIsConnected, UnitClass, RAID_CLASS_COLORS
+-- local _, class, c
 
-local function colour(statusbar, unit)
-    if UnitIsPlayer(unit) and UnitIsConnected(unit) and unit == statusbar.unit and
-        UnitClass(unit) then
-        _, class = UnitClass(unit)
-        c = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or
-                RAID_CLASS_COLORS[class]
-        statusbar:SetStatusBarColor(c.r, c.g, c.b)
-    end
-end
+-- local function colour(statusbar, unit)
+--     if UnitIsPlayer(unit) and UnitIsConnected(unit) and unit == statusbar.unit and
+--         UnitClass(unit) then
+--         _, class = UnitClass(unit)
+--         c = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or
+--                 RAID_CLASS_COLORS[class]
+--         statusbar:SetStatusBarColor(c.r, c.g, c.b)
+--     end
+-- end
 
-hooksecurefunc("UnitFrameHealthBar_Update", colour)
-hooksecurefunc("HealthBar_OnValueChanged",
-               function(self) colour(self, self.unit) end)
+-- hooksecurefunc("UnitFrameHealthBar_Update", colour)
+-- hooksecurefunc("HealthBar_OnValueChanged",
+--                function(self) colour(self, self.unit) end)
 
 -- 目标和焦点名字背景透明
-FocusFrameNameBackground:SetTexture()
-TargetFrameNameBackground:SetTexture()
+-- FocusFrameNameBackground:SetTexture()
+-- TargetFrameNameBackground:SetTexture()
 
 -- 目标身上来源为自己的Debuff放大
 local function TargetFrame_UpdateDebuffAnchor_OnHook(_, frame, index)

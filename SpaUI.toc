@@ -15,6 +15,7 @@ core\Events.lua
 
 #Config
 config\Config.lua
+config\ConfigPanel.lua
 
 #Features
 features\Castbar.lua
@@ -34,7 +35,7 @@ features\MinimapPing.lua
 features\Reputation.lua
 features\RaidMarkerIcon.lua
 #修改自SUI
-features\FriendsColor.lua
+features\FriendsList.lua
 features\KeyStoneRewardLevel.lua
 
 #Chat 参考了TinyChat
