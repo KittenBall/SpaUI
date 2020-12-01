@@ -1,5 +1,7 @@
 local addonName, SpaUI = ...
 
+SpaUI.Widget = {}
+
 
 local DEFAULT_LINE_COLOR_R = 105
 local DEFAULT_LINE_COLOR_G = 105

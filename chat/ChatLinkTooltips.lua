@@ -3,7 +3,7 @@ local addonName, SpaUI = ...
 
 local L = SpaUI.Localization
 
-local function showTooltip(frame, link)
+local function ShowTooltip(frame, link)
     if link then
         local type = strsplit(":", link)
         if type == "item" or type == "spell" or type == "enchant" or type ==
@@ -20,7 +20,7 @@ local function hideTooltip(frame,link)
     GameTooltip:Hide()
 end
 
-local function setOrHookHandler(frame, script, func)
+local function SetOrHookHandler(frame, script, func)
     if frame:GetScript(script) then
         frame:HookScript(script, func)
     else
@@ -31,7 +31,7 @@ end
 for i = 1, NUM_CHAT_WINDOWS do
     local frame = _G["ChatFrame" .. i]
     if frame ~= COMBATLOG then
-        setOrHookHandler(frame, "OnHyperLinkEnter", showTooltip)
-        setOrHookHandler(frame, "OnHyperLinkLeave", hideTooltip)
+        SetOrHookHandler(frame, "OnHyperLinkEnter", ShowTooltip)
+        SetOrHookHandler(frame, "OnHyperLinkLeave", hideTooltip)
     end
 end

@@ -6,6 +6,9 @@ local L = SpaUI.Localization
 -- Tooltip添加id
 local function addLine(tooltip, id, prefix)
     if not id or id == "" then return end
+    if tooltip == GameTooltip and not IsAltKeyDown() then
+        return
+    end
     id = HIGHLIGHT_FONT_COLOR_CODE .. id .. FONT_COLOR_CODE_CLOSE
     tooltip:AddLine("")
     tooltip:AddDoubleLine(prefix, id)
@@ -86,8 +89,40 @@ hooksecurefunc("TaskPOI_OnEnter", function(self)
     end
 end)
 
-local function attachItemTooltip(tooltip)
-    -- print(111)
+
+-- 物品id
+
+local ItemIDPrefix = L["tooltip_item_id"]
+
+hooksecurefunc(GameTooltip, "SetToyByItemID", function(self, id)
+    addLine(self, id, ItemIDPrefix)
+  end)
+
+local function attachItemTooltip(self)
+    local link = select(2, self:GetItem())
+    if not link then return end
+    local itemString = string.match(link, "item:([%-?%d:]+)")
+    if not itemString then return end
+
+    local id = string.match(link, "item:(%d*)")
+    if (id == "" or id == "0") and TradeSkillFrame ~= nil and TradeSkillFrame:IsVisible() and GetMouseFocus().reagentIndex then
+        local selectedRecipe = TradeSkillFrame.RecipeList:GetSelectedRecipeID()
+        for i = 1, 8 do
+            if GetMouseFocus().reagentIndex == i then
+                id = C_TradeSkillUI.GetRecipeReagentItemLink(selectedRecipe, i):match("item:(%d*)") or nil
+                break
+            end
+        end
+    end
+
+    if id then
+        addLine(self, id, ItemIDPrefix)
+    end
 end
 
 GameTooltip:HookScript("OnTooltipSetItem", attachItemTooltip)
+ItemRefTooltip:HookScript("OnTooltipSetItem", attachItemTooltip)
+ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", attachItemTooltip)
+ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", attachItemTooltip)
+ShoppingTooltip1:HookScript("OnTooltipSetItem", attachItemTooltip)
+ShoppingTooltip2:HookScript("OnTooltipSetItem", attachItemTooltip)

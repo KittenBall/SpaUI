@@ -1,5 +1,6 @@
 local addonName, SpaUI = ...
 
+local Widget = SpaUI.Widget
 -- 摧毁物品不需要填写delete
 --------------------------------------------------------------------------------
 -- EasyDeleteConfirm
@@ -13,23 +14,21 @@ local function DeleteItemConfirm(...)
         StaticPopup1Button1:Enable()
         local link = select(3, GetCursorInfo())
 
-        SpaUI.EasyDeleteLink:SetText(link)
-        SpaUI.EasyDeleteLink:Show()
+        Widget.EasyDeleteLink:SetText(link)
+        Widget.EasyDeleteLink:Show()
     end
 end
 
-local function EasyDeleteInitialization(event, loaded_addon)
-    if loaded_addon ~= addonName then return end
+local function EasyDeleteInitialization()
     -- create item link container
-    SpaUI.EasyDeleteLink = StaticPopup1:CreateFontString(nil, 'ARTWORK',
+    Widget.EasyDeleteLink = StaticPopup1:CreateFontString(nil, 'ARTWORK',
                                                          'GameFontHighlight')
-    SpaUI.EasyDeleteLink:SetPoint('CENTER', StaticPopup1EditBox)
-    SpaUI.EasyDeleteLink:Hide()
+    Widget.EasyDeleteLink:SetPoint('CENTER', StaticPopup1EditBox)
+    Widget.EasyDeleteLink:Hide()
 
     StaticPopup1:HookScript('OnHide',
-                            function(self) SpaUI.EasyDeleteLink:Hide() end)
-    return true
+                            function(self) Widget.EasyDeleteLink:Hide() end)
 end
 
-SpaUI:RegisterEvent('ADDON_LOADED', EasyDeleteInitialization)
+SpaUI:RegisterEvent('PLAYER_LOGIN', EasyDeleteInitialization)
 SpaUI:RegisterEvent('DELETE_ITEM_CONFIRM', DeleteItemConfirm)

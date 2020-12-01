@@ -2,6 +2,7 @@
 local addonName, SpaUI = ...
 
 local L = SpaUI.Localization
+local Widget = SpaUI.Widget
 
 local EMOTE_SIZE = 25
 local EMOTE_SIZE_MARGIN = 6
@@ -99,7 +100,7 @@ local function OnEmoteClick(button, clickType)
         end
         ChatFrameEditBox:Insert(button.text)
     end
-    SpaUI:ToggleEmoteTable()
+    Widget:ToggleEmoteTable()
 end
 
 function CreateEmoteTableFrame()
@@ -180,12 +181,12 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", ChatEmoteFilter)
 -- 解析社区聊天内容
 ChatFrame_AddMessageEventFilter("CHAT_MSG_COMMUNITIES_CHANNEL", ChatEmoteFilter)
 
-local EMOTE_CHAT_BUBBLE_RULE = format("\124T%%s:%d\124t", EMOTE_SIZE)     
+local EMOTE_CHAT_DEFAULT_RULE = format("\124T%%s:%d\124t", EMOTE_SIZE)     
 
-local function ReplaceBubbleEmote(msg)
+local function DefaultReplaceEmote(msg)
     for i = 1, #emotes do
         if msg == emotes[i][1] then
-            return format(EMOTE_CHAT_BUBBLE_RULE,emotes[i][2])
+            return format(EMOTE_CHAT_DEFAULT_RULE,emotes[i][2])
         end
     end
     return msg
@@ -199,7 +200,7 @@ local function ReplaceChatBubbleEmote()
             frame = v:GetChildren()
             if (frame and frame.String) then
                 text = frame.String:GetText()
-                after = text:gsub("%{.-%}", ReplaceBubbleEmote)
+                after = text:gsub("%{.-%}", DefaultReplaceEmote)
                 if (after ~= text) then
                     return frame.String:SetText(after)
                 end
@@ -209,13 +210,13 @@ end
 
 -- 聊天气泡消息接收监听
 local function OnChatBubblesMsgReceived()
-    if SpaUI.ChatBubbleTextReplaceLooper then
-        SpaUI.ChatBubbleTextReplaceLooper:Cancel()
-        SpaUI.ChatBubbleTextReplaceLooper = nil
+    if Widget.ChatBubbleTextReplaceLooper then
+        Widget.ChatBubbleTextReplaceLooper:Cancel()
+        Widget.ChatBubbleTextReplaceLooper = nil
     end
     ReplaceChatBubbleEmote()
     -- 循环30次 即3秒
-    SpaUI.ChatBubbleTextReplaceLooper = C_Timer.NewTicker(0.1,ReplaceChatBubbleEmote,30)
+    Widget.ChatBubbleTextReplaceLooper = C_Timer.NewTicker(0.1,ReplaceChatBubbleEmote,30)
 end
 
 -- 聊天气泡设置变更回调
@@ -237,22 +238,22 @@ end
 
 -- 监听聊天气泡设置变更
 hooksecurefunc("InterfaceOptionsDisplayPanelChatBubblesDropDown_SetValue",OnChatBubblesSettingChanged)
-SpaUI:RegisterEvent('ADDON_LOADED',OnChatBubblesSettingChanged)
+SpaUI:CallbackOnce('PLAYER_LOGIN',OnChatBubblesSettingChanged)
 
 -- 获取表情面板
-function SpaUI:GetEmoteTable()
+function Widget:GetEmoteTable()
     if not SpaUIEmoteTableFrame then CreateEmoteTableFrame() end
     return SpaUIEmoteTableFrame
 end
 
 -- 关闭表情面板
-function SpaUI:CloseEmoteTable()
+function Widget:CloseEmoteTable()
     local ChatEmoteTable = self:GetEmoteTable()
     ChatEmoteTable:Hide()
 end
 
 -- 打开/关闭表情面板
-function SpaUI:ToggleEmoteTable()
+function Widget:ToggleEmoteTable()
     local ChatEmoteTable = self:GetEmoteTable()
     if ChatEmoteTable:IsShown() then
         ChatEmoteTable:Hide()

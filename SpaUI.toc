@@ -18,6 +18,7 @@ config\Config.lua
 config\ConfigPanel.lua
 
 #Features
+features\Templates.xml
 features\Castbar.lua
 features\UnitFrames.lua
 #修改自EasyDeleteConfirm
@@ -28,7 +29,7 @@ features\AutoRepair.lua
 features\Align.lua
 features\MarkPosition.lua
 #修改自idTip
-features\Tooltip.lua
+features\Tooltips.lua
 #修改自SexyMap
 features\MinimapPing.lua
 #修改自ParagonReputation
@@ -37,9 +38,11 @@ features\RaidMarkerIcon.lua
 #修改自SUI
 features\FriendsList.lua
 features\KeyStoneRewardLevel.lua
+features\TradeTabs.lua
 
 #Chat 参考了TinyChat
 chat\ChatBar.lua
+chat\ChatTab.lua
 #修改自SimpleChat
 chat\ChatEmote.lua
 chat\ChatCopy.lua

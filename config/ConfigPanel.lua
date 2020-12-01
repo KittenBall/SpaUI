@@ -1,5 +1,6 @@
 local addonName,SpaUI = ...
 local L = SpaUI.Localization
+local Config = SpaUI.Config
 
 -- 创建配置首页
 local function CreateConfigHomePage(configPanel)
@@ -27,14 +28,12 @@ end
 
 -- 界面面板内插入SpaUI配置面板
 local function CreateConfigPanel(event, name)
-    if name ~= addonName then return end
     local SpaUIConfigPanel =
         CreateFrame("Frame", "SpaUIConfigPanel", UIParent)
     CreateConfigHomePage(SpaUIConfigPanel)
     SpaUIConfigPanel.name = L["addon_name"]
     InterfaceOptions_AddCategory(SpaUIConfigPanel)
-    SpaUI.ConfigPanel = SpaUIConfigPanel
-    return true
+    Config.ConfigPanel = SpaUIConfigPanel
 end
 
-SpaUI:RegisterEvent('ADDON_LOADED', CreateConfigPanel)
+SpaUI:CallbackOnce('PLAYER_LOGIN', CreateConfigPanel)

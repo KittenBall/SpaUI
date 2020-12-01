@@ -5,7 +5,9 @@
 -- 团队框架标记 修改自Raid Frame Icons
 local addonName, SpaUI = ...
 
-SpaUI.RaidTargetIcons = {}
+local Widget = SpaUI.Widget
+
+Widget.RaidTargetIcons = {}
 
 local function UpdateRaidTargetIcon(frame)
     local unit = frame.unit
@@ -14,22 +16,22 @@ local function UpdateRaidTargetIcon(frame)
     if not name or not unit or not UnitExists(unit) then return end
     local marker = GetRaidTargetIndex(unit)
 
-    if not SpaUI.RaidTargetIcons[name] then
-        SpaUI.RaidTargetIcons[name] = {}
-        SpaUI.RaidTargetIcons[name].icon = frame:CreateTexture(nil, "OVERLAY")
-        SpaUI.RaidTargetIcons[name].icon:SetPoint("CENTER", 0, 0)
-        SpaUI.RaidTargetIcons[name].icon:SetWidth(28)
-        SpaUI.RaidTargetIcons[name].icon:SetHeight(28)
+    if not Widget.RaidTargetIcons[name] then
+        Widget.RaidTargetIcons[name] = {}
+        Widget.RaidTargetIcons[name].icon = frame:CreateTexture(nil, "OVERLAY")
+        Widget.RaidTargetIcons[name].icon:SetPoint("CENTER", 0, 0)
+        Widget.RaidTargetIcons[name].icon:SetWidth(28)
+        Widget.RaidTargetIcons[name].icon:SetHeight(28)
     end
 
-    if marker ~= SpaUI.RaidTargetIcons[name].marker then
-        SpaUI.RaidTargetIcons[name].marker = marker
+    if marker ~= Widget.RaidTargetIcons[name].marker then
+        Widget.RaidTargetIcons[name].marker = marker
         if marker then
-            SpaUI.RaidTargetIcons[name].icon:SetTexture(
+            Widget.RaidTargetIcons[name].icon:SetTexture(
                 "Interface\\TargetingFrame\\UI-RaidTargetingIcon_" .. marker)
-            SpaUI.RaidTargetIcons[name].icon:Show()
+                Widget.RaidTargetIcons[name].icon:Show()
         else
-            SpaUI.RaidTargetIcons[name].icon:Hide()
+            Widget.RaidTargetIcons[name].icon:Hide()
         end
     end
 end
