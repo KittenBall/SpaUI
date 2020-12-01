@@ -4,11 +4,12 @@ local L = SpaUI.Localization
 
 local function UpdateFriends(...)
     local buttons = FriendsListFrameScrollFrame.buttons
+    local currentArea = GetRealZoneText()
+    local faction = UnitFactionGroup("player")
     for i = 1, #buttons do
         local nameText, infoText
         local button = buttons[i]
         if button and button:IsShown() then
-            local currentArea = GetRealZoneText()
             if button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
                 local accountInfo = C_BattleNet.GetFriendAccountInfo(button.id)
                 if accountInfo.gameAccountInfo.isOnline and
@@ -17,9 +18,10 @@ local function UpdateFriends(...)
                     local characterName = accountInfo.gameAccountInfo.characterName
                     local class = accountInfo.gameAccountInfo.className
                     local areaName = accountInfo.gameAccountInfo.areaName
-                    if accountName and characterName and class then
+                    local factionName = accountInfo.gameAccountInfo.factionName
+                    if accountName and characterName and class and factionName then
                         local class = SpaUI:GetClassFileByLocalizedClassName(class)
-                        if class then
+                        if class and factionName == faction then
                             nameText = accountName .. " |c" ..RAID_CLASS_COLORS[class].colorStr ..  "(" ..characterName .. ")" ..FONT_COLOR_CODE_CLOSE
                         end
                     end

@@ -34,7 +34,7 @@ L["reputation_paragon_no_history"] = "巅峰"
 -- MinimapPing
 L["minimap_ping_who_group"] = "(%d队)%s"
 -- FriendsList
-L["friends_list_area"] = "|cFF00BFFF%s|r"
+L["friends_list_area"] = "|cFF7FFF00%s|r"
 -- UnitFrames
 L["uf_spell_source_prefix"] = "法术来源："
 L["uf_buff_source_prefix"] = "增益来源："
