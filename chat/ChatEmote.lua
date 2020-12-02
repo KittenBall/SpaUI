@@ -208,15 +208,16 @@ local function ReplaceChatBubbleEmote()
         end
 end
 
+local CHAT_BUBBLE_TASK_NAME = "ChatBubbles"
+
 -- 聊天气泡消息接收监听
 local function OnChatBubblesMsgReceived()
-    if Widget.ChatBubbleTextReplaceLooper then
-        Widget.ChatBubbleTextReplaceLooper:Cancel()
-        Widget.ChatBubbleTextReplaceLooper = nil
+    local task = SpaUI:GetTimerTask(CHAT_BUBBLE_TASK_NAME) 
+    if not task then
+        SpaUI:Schedule(CHAT_BUBBLE_TASK_NAME,0.15,0.15,5,ReplaceChatBubbleEmote)
+    else
+        task:ReStart()
     end
-    ReplaceChatBubbleEmote()
-    -- 循环30次 即3秒
-    Widget.ChatBubbleTextReplaceLooper = C_Timer.NewTicker(0.1,ReplaceChatBubbleEmote,30)
 end
 
 -- 聊天气泡设置变更回调

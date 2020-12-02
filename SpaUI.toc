@@ -12,6 +12,7 @@ localization\Localization.lua
 core\Core.lua
 core\Widget.lua
 core\Events.lua
+core\Timer.lua
 
 #Config
 config\Config.lua
