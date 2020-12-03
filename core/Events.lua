@@ -26,7 +26,7 @@ SpaUI.EventListener:SetScript("OnEvent", function(self, event, ...)
 
     if SpaUI.OnceEvents and SpaUI.OnceEvents[event] then
         -- 回调仅通知一次的事件
-        len = #SpaUI.OnceEvents[event]
+        local len = #SpaUI.OnceEvents[event]
         for i = 1, len do
             if SpaUI.OnceEvents[event][i] then
                 SpaUI.OnceEvents[event][i](event, ...)

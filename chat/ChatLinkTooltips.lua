@@ -8,7 +8,7 @@ local function ShowTooltip(frame, link)
         local type = strsplit(":", link)
         if type == "item" or type == "spell" or type == "enchant" or type ==
             "quest" or type == "talent" or type == "glyph" or type == "unit" or
-            type == "achievement" then
+            type == "achievement" or type == "mawpower" then
             GameTooltip:SetOwner(frame, "ANCHOR_CURSOR")
             GameTooltip:SetHyperlink(link)
             GameTooltip:Show()
