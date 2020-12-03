@@ -24,6 +24,12 @@ local function CreateConfigHomePage(configPanel)
     line:SetPoint("LEFT",configPanel,"LEFT",20,0)
     line:SetPoint("RIGHT",configPanel,"RIGHT",-20,0)
     line:SetPoint("TOP",title,"BOTTOM",0,-15)
+
+    local debugButton = Config:CreateOptionCheckButton(configPanel,L["config_debug"],false,L["config_debug_tooltip"],function ()
+        print(111)
+    end)
+    debugButton:SetPoint("LEFT",configPanel,"LEFT",15,0)
+    debugButton:SetPoint("TOP",line,"BOTTOM",0,-15)
 end
 
 -- 界面面板内插入SpaUI配置面板

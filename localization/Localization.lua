@@ -11,6 +11,8 @@ L["config_addon_version"] = "|cFF00BFFF%s|r"
 L["config_addon_author"] = "作者：|cFFADD8E6%s|r"
 L["config_id_tip"] = "鼠标提示显示ID"
 L["config_id_tip_tooltip"] = "在鼠标提示内显示任务ID，法术ID，货币ID，NPCID等"
+L["config_debug"] = "调试模式"
+L["config_debug_tooltip"] = "作者用，勾选后会看见很多对用户没意义的信息，你不应该看到该选项"
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
 L["auto_repair_cost"] = "|cffead000修理花费: %s|r"

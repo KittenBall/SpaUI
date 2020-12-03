@@ -16,18 +16,12 @@ SLASH_SPAUI2 = "/spaui"
 
 -- 创建一个CheckButton
 -- return not nil
-function Config:CreateOptionCheckButton(parent,text,checked,tooltipText)
+function Config:CreateOptionCheckButton(parent,text,checked,tooltipText,setValueFunc)
     local checkButton = CreateFrame("CheckButton",nil,parent,"InterfaceOptionsCheckButtonTemplate")
     checkButton.Text:SetText(text)
+    checkButton.tooltipText = tooltipText
     checkButton:SetChecked(checked)
-    checkButton:SetScript("OnEnter",function(self)
-        GameTooltip:SetOwner(self,"ANCHOR_RIGHT")
-        GameTooltip:AddLine(tooltipText)
-        GameTooltip:Show()
-    end)
-    checkButton:SetScript("OnLeave",function(self)
-        GameTooltip:Hide()
-    end)
+    checkButton.SetValue = setValueFunc
     return checkButton
 end
 
