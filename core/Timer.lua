@@ -3,13 +3,13 @@ local addonName,SpaUI = ...
 -- 期望最低帧数
 local FPS = 30
 
-local timerTaskStub = {
+local TimerTaskStub = {
     name = nil, -- 名字，唯一标识符
     timer = 0, -- 计算每次循环间隔
     startTime = 0, -- 开始时间
     interval = 1, -- 重复间隔，低于期望帧数会被矫正
     currentCount = 0, -- 当前重复次数
-    repeatCount = 1, -- 重复次数 nil或 <=0 则无限循环
+    repeatCount = 1, -- 重复次数 <=0 则无限循环
     paused = false, -- 暂停标识符 不要直接在本文件外更改其状态，请调用Pause方法！
     stopped = false, -- 结束标识符 不要直接在本文件外更改其状态，请调用Stop方法！
     OnUpdate = function(self) end, -- 循环回调
@@ -85,7 +85,7 @@ end)
 local function SetTimerTaskStub(timerTask)
     setmetatable(timerTask,{
         __index = function(self,key)
-            local value = timerTaskStub[key]
+            local value = TimerTaskStub[key]
             self[key] = value
             return value
         end
@@ -148,6 +148,7 @@ function SpaUI:Schedule(name,delay,interval,repeatCount,onUpdate)
 end
 
 function SpaUI:GetTimerTask(name)
+    if not name then return end
     if not SpaUI.TimerTasks then
         SpaUI.TimerTasks = {}
     end

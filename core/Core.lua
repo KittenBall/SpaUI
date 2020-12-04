@@ -1,24 +1,18 @@
 local addonName, SpaUI = ...
 
 local L = SpaUI.Localization
-
-local Debug = true
-
-print(L["addon_loaded_tip"]:format(GetAddOnMetadata(addonName, "Version")))
-
-SlashCmdList["RELOADUI"] = function() ReloadUI() end
-SLASH_RELOADUI1 = "/rl"
-
-SpaUI.EventListener = CreateFrame("Frame", "SpaUIEventListener")
+local LocalEvents = SpaUI.LocalEvents
 
 function SpaUI:Log(msg)
-    if not Debug then return end
-    print(L["debug_format"]:format(msg))
+    if SpaUIConfigDB.DebugMode and SpaUIConfigDB.IsDebug then
+        print(L["debug_format"]:format(msg))
+    end
 end
 
 function SpaUI:Log(msg, ...)
-    if not Debug then return end
-    print(L["debug_format"]:format(msg), ...)
+    if SpaUIConfigDB.DebugMode and SpaUIConfigDB.IsDebug then
+        print(L["debug_format"]:format(msg), ...)
+    end
 end
 
 -- 通过本地化的职业名称获取职业枚举 比如：法师->MAGE
@@ -41,3 +35,14 @@ end
 function SpaUI:ShowMessage(string)
     print(L["message_format"]:format(string))
 end
+
+-- SpaUI初始化完成
+local function OnSpaUIInitialization(event,name)
+    if name ~= addonName then return end
+    SpaUIConfigDB = SpaUIConfigDB or {}
+    print(L["addon_loaded_tip"]:format(GetAddOnMetadata(addonName, "Version")))
+    SpaUI:PostLocalEvent(LocalEvents.ADDON_INITIALIZATION)
+    return ture
+end
+
+SpaUI:RegisterEvent('ADDON_LOADED',OnSpaUIInitialization)

@@ -6,22 +6,34 @@ SpaUI.Config = {}
 
 local Config = SpaUI.Config
 
--- SpaUI 配置面板命令
-SlashCmdList["SPAUI"] = function()
-    InterfaceOptionsFrame_Show()
-    InterfaceOptionsFrame_OpenToCategory(Config.ConfigPanel)
-end
-SLASH_SPAUI1 = "/spa"
-SLASH_SPAUI2 = "/spaui"
-
 -- 创建一个CheckButton
 -- return not nil
-function Config:CreateOptionCheckButton(parent,text,checked,tooltipText,setValueFunc)
+function Config:CreateOptionCheckButton(parent,text,checked,tooltipText)
     local checkButton = CreateFrame("CheckButton",nil,parent,"InterfaceOptionsCheckButtonTemplate")
     checkButton.Text:SetText(text)
     checkButton.tooltipText = tooltipText
     checkButton:SetChecked(checked)
-    checkButton.SetValue = setValueFunc
     return checkButton
 end
 
+-- 切换debug模式
+function Config:ToggleDebugMode(debugMode)
+    SpaUIConfigDB.DebugMode = debugMode
+    if not Config.ConfigPanel then return end
+    local configPanel = Config.ConfigPanel
+    if SpaUIConfigDB.DebugMode then
+       if not configPanel.DebugButton then
+            local debugButton = Config:CreateOptionCheckButton(configPanel,L["config_debug"],SpaUIConfigDB.IsDebug,L["config_debug_tooltip"])
+            debugButton:SetPoint("BOTTOMLEFT",configPanel,"BOTTOMLEFT",15,15)
+            debugButton.SetValue = function(self,checked)
+                SpaUIConfigDB.IsDebug = (checked == "1") and true or false
+            end
+            configPanel.DebugButton = debugButton
+       end
+        configPanel.DebugButton:Show()
+    else
+        if configPanel.DebugButton then
+            configPanel.DebugButton:Hide()
+        end
+    end
+end

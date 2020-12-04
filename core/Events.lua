@@ -1,6 +1,6 @@
 local addonName,SpaUI = ...
 
-local L = SpaUI.Localization
+SpaUI.EventListener = CreateFrame("Frame", "SpaUIEventListener")
 
 -- 事件收发
 SpaUI.EventListener:SetScript("OnEvent", function(self, event, ...)
@@ -70,7 +70,7 @@ function SpaUI:CallbackOnce(event, handler)
 end
 
 -- 注销事件
-function SpaUI:UnregisterEvent(event)
+function SpaUI:UnregisterAllEvent(event)
     if not event then return end
     if not self.EventListener then return end
     self.EventListener:UnregisterEvent(event)
@@ -97,9 +97,82 @@ function SpaUI:UnregisterEvent(event, handler)
     end
 end
 
--- 注销全部事件
-function SpaUI:UnregisterAllEvents()
-    if not self.EventListener then return end
-    self.EventListener:UnregisterAllEvents()
-    self.Events = nil
+-- 注册本地事件
+function SpaUI:RegisterLocalEvent(event, handler)
+    if not event or not handler or type(handler) ~= "function" then return end
+    if not self.LocalEvents then self.LocalEvents = {} end
+    if not self.LocalEvents[event] then self.LocalEvents[event] = {} end
+    local len = #self.LocalEvents[event]
+    for i = 1, len do if self.LocalEvents[event][i] == handler then return end end
+    tinsert(self.LocalEvents[event], handler)
 end
+
+-- 注册一次性本地事件 不允许注销
+function SpaUI:CallbackLocalEventOnce(event, handler)
+    if not event or not handler or type(handler) ~= "function" then return end
+    if not self.LocalOnceEvents then self.LocalOnceEvents = {} end
+    if not self.LocalOnceEvents[event] then self.LocalOnceEvents[event] = {} end
+    local len = #self.LocalOnceEvents[event]
+    for i = 1, len do if self.LocalOnceEvents[event][i] == handler then return end end
+    tinsert(self.LocalOnceEvents[event], handler)
+end
+
+-- 注销本地事件
+function SpaUI:UnregisterLocalEvent(event, handler)
+    if not event or not handler or type(handler) ~= "function" then return end
+    if self.LocalEvents and self.LocalEvents[event] then
+        local len = #self.LocalEvents[event]
+        for i = 1, len do
+            if self.LocalEvents[event][i] == handler then
+                tremove(self.LocalEvents[event], i)
+                break
+            end
+        end
+        len = #self.LocalEvents[event]
+        if len == 0 then
+            self.LocalEvents[event] = nil
+        end
+    end
+end
+
+-- 注销本地事件
+function SpaUI:UnregisterAllLocalEvent(event)
+    if not event then return end
+    if self.LocalEvents then self.LocalEvents[event] = nil end
+end
+
+-- 发送本地事件
+function SpaUI:PostLocalEvent(event,...)
+    if self.LocalEvents and self.LocalEvents[event] then
+        local len = #self.LocalEvents[event]
+        local consumed
+        for i = 1, len do
+            local handler = self.LocalEvents[event][i]
+            -- 如果事件处理函数返回真，则认为消费了该事件，将该处理函数移除
+            -- 这对某些满足条件后不再需要事件回调的函数很有用，提供了自动注销的功能
+            if handler and self.LocalEvents[event][i](event, ...) then
+                if not consumed then consumed = {} end
+                tinsert(consumed, handler)
+            end
+        end
+
+        -- 移除所有消费了的函数
+        if consumed then
+            for i = 1, #consumed do
+                self:UnregisterLocalEvent(event, consumed[i])
+            end
+        end
+    end
+
+    if self.LocalOnceEvents and self.LocalOnceEvents[event] then
+        -- 回调仅通知一次的事件
+        local len = #self.LocalOnceEvents[event]
+        for i = 1, len do
+            if self.LocalOnceEvents[event][i] then
+                self.LocalOnceEvents[event][i](event, ...)
+            end
+        end
+        self.LocalOnceEvents[event] = nil
+    end
+end
+

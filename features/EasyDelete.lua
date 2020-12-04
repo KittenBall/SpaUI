@@ -30,5 +30,5 @@ local function EasyDeleteInitialization()
                             function(self) Widget.EasyDeleteLink:Hide() end)
 end
 
-SpaUI:RegisterEvent('PLAYER_LOGIN', EasyDeleteInitialization)
+SpaUI:CallbackOnce('PLAYER_LOGIN', EasyDeleteInitialization)
 SpaUI:RegisterEvent('DELETE_ITEM_CONFIRM', DeleteItemConfirm)

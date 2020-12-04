@@ -17,12 +17,11 @@ local function CreateCopyButton()
     -- 图标太亮了，降点透明度
     CopyButton:SetAlpha(ALPHA_LEAVE)
     CopyButton:SetPoint("TOPRIGHT",ChatFrame1,"TOPRIGHT")
-    CopyButton:SetNormalTexture("Interface\\Addons\\SpaUI\\media\\copy")
-    CopyButton:SetHighlightTexture("Interface\\Addons\\SpaUI\\media\\copy_highlight")
-    CopyButton:SetPushedTexture("Interface\\Addons\\SpaUI\\media\\copy_pressed")
+    CopyButton:SetNormalTexture("Interface\\Addons\\SpaUI\\Media\\copy")
+    CopyButton:SetHighlightTexture("Interface\\Addons\\SpaUI\\Media\\copy_highlight")
+    CopyButton:SetPushedTexture("Interface\\Addons\\SpaUI\\Media\\copy_pressed")
     CopyButton:SetScript("OnEnter",function(self) self:SetAlpha(ALPHA_ENTER) end)
     CopyButton:SetScript("OnLeave",function(self) self:SetAlpha(ALPHA_LEAVE) end)
-    return true
 end
 
-SpaUI:RegisterEvent('PLAYER_ENTERING_WORLD',CreateCopyButton)
+SpaUI:CallbackOnce('PLAYER_LOGIN',CreateCopyButton)

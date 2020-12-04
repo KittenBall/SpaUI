@@ -99,9 +99,9 @@ local function CreateChatBarButton(bar, index)
         bar[type]:SetScript("OnClick", OnWorldChannelButtonClick)
     elseif type == "Roll" then
         -- roll点
-        bar[type]:SetNormalTexture("Interface\\Addons\\SpaUI\\media\\roll")
-        bar[type]:SetHighlightTexture("Interface\\Addons\\SpaUI\\media\\roll_highlight")
-        bar[type]:SetPushedTexture("Interface\\Addons\\SpaUI\\media\\roll_pressed")
+        bar[type]:SetNormalTexture("Interface\\Addons\\SpaUI\\Media\\roll")
+        bar[type]:SetHighlightTexture("Interface\\Addons\\SpaUI\\Media\\roll_highlight")
+        bar[type]:SetPushedTexture("Interface\\Addons\\SpaUI\\Media\\roll_pressed")
         bar[type]:SetScript("OnClick", function(self) RandomRoll(1, 100) end)
     end
 end
@@ -191,10 +191,9 @@ local function CreateChatBar()
     if ChatBar:GetBottom() < 0 then SpaUI:ShowMessage(L["chat_bar_outside"]) end
 
     CreateChatEmoteButton()
-    return true
 end
 
 -- 切换聊天风格的时候更改锚点
 hooksecurefunc("ChatEdit_ActivateChat", ChangeChatBarPoint)
 
-SpaUI:RegisterEvent('PLAYER_ENTERING_WORLD', CreateChatBar)
+SpaUI:CallbackOnce('PLAYER_LOGIN', CreateChatBar)

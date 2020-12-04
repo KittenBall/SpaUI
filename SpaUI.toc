@@ -4,47 +4,50 @@
 ## Title: |cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI
 ## Notes: 暴雪界面增强，部分代码来源于其它插件及论坛
 ## DefaultState: enabled
+## SavedVariables: SpaUIConfigDB
 
 #Localization
-localization\Localization.lua
+Localization\Localization.lua
 
 #Core
-core\Core.lua
-core\Widget.lua
-core\Events.lua
-core\Timer.lua
+Core\Widget.lua
+Core\Events.lua
+Core\LocalEvents.lua
+Core\Timer.lua
+Core\Core.lua
 
 #Config
-config\Config.lua
-config\ConfigPanel.lua
+Config\Config.lua
+Config\ConfigPanel.lua
+Config\Macros.lua
 
 #Features
-features\Templates.xml
-features\Castbar.lua
-features\UnitFrames.lua
+Features\Templates.xml
+Features\Castbar.lua
+Features\UnitFrames.lua
 #修改自EasyDeleteConfirm
-features\EasyDelete.lua
-features\Actionbar.lua
-features\AutoSell.lua
-features\AutoRepair.lua
-features\Align.lua
-features\MarkPosition.lua
+Features\EasyDelete.lua
+Features\Actionbar.lua
+Features\AutoSell.lua
+Features\AutoRepair.lua
+Features\Align.lua
+Features\MarkPosition.lua
 #修改自idTip
-features\Tooltips.lua
+Features\Tooltips.lua
 #修改自SexyMap
-features\MinimapPing.lua
+Features\MinimapPing.lua
 #修改自ParagonReputation
-features\Reputation.lua
-features\RaidMarkerIcon.lua
+Features\Reputation.lua
+Features\RaidMarkerIcon.lua
 #修改自SUI
-features\FriendsList.lua
-features\KeyStoneRewardLevel.lua
-features\TradeTabs.lua
+Features\FriendsList.lua
+Features\KeyStoneRewardLevel.lua
+Features\TradeTabs.lua
 
 #Chat 参考了TinyChat
-chat\ChatBar.lua
-chat\ChatTab.lua
+Chat\ChatBar.lua
+Chat\ChatTab.lua
 #修改自SimpleChat
-chat\ChatEmote.lua
-chat\ChatCopy.lua
-chat\ChatLinkTooltips.lua
+Chat\ChatEmote.lua
+Chat\ChatCopy.lua
+Chat\ChatLinkTooltips.lua
