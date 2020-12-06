@@ -6,7 +6,7 @@ L["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
 L["addon_loaded_tip"] = L["addon_name"]..":|cFF00BFFF%s|r 已载入"
 L["debug_format"] = L["addon_name"].." Debug:%s"
 L["message_format"] = L["addon_name"]..":%s"
--- config
+-- Config
 L["config_addon_version"] = "|cFF00BFFF%s|r"
 L["config_addon_author"] = "作者：|cFFADD8E6%s|r"
 L["config_addon_introduct"] = [[
@@ -16,8 +16,8 @@ L["config_macro"] = [[
 以下为常用的宏命令：
 
     |cFF00BFFF/rl|r 重载界面
-    |cFF00BFFF/spa,/spaui|r 打开此面板
-    |cFF00BFFF/spa align,/spaui align|r 显示或隐藏网格线
+    |cFF00BFFF/spa|r 打开此面板
+    |cFF00BFFF/spa align|r 显示或隐藏网格线
 ]]
 L["config_id_tip"] = "鼠标提示显示ID"
 L["config_id_tip_tooltip"] = "在鼠标提示内显示任务ID，法术ID，货币ID，NPCID等"
@@ -129,5 +129,7 @@ L["chat_emote_wretched"] = "{猥琐}"
 L["chat_emote_victory"] = "{胜利}"
 L["chat_emote_lei_feng"] = "{雷锋}"
 L["chat_emote_injustice"] = "{委屈}"
+-- ChatCopy
+L["chat_copy_dialog_title"] = "聊天复制"
 
 SpaUI.Localization = L

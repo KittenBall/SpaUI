@@ -2,8 +2,14 @@ local addonName,SpaUI = ...
 
 local L = SpaUI.Localization
 
+local lastTime = 0
+
 -- 自动卖店
 local function AutoSell()
+    local current = GetTime()
+    -- 防止快速操作
+    if current - lastTime < 2 then return end
+    lastTime = current
     local total = 0
     for container = 0, 4 do
         local slotNum = GetContainerNumSlots(container)
@@ -12,9 +18,7 @@ local function AutoSell()
             -- item quality == 0 (poor) 
             if link and select(3, GetItemInfo(link)) == 0 then
                 -- vendor price per each * stack number 
-                local price = select(11, GetItemInfo(link)) *
-                                  select(2,
-                                         GetContainerItemInfo(container, slot))
+                local price = select(11, GetItemInfo(link)) * select(2,GetContainerItemInfo(container, slot))
                 if price > 0 then
                     UseContainerItem(container, slot)
                     PickupMerchantItem()

@@ -1,0 +1,133 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+    <!-- 带标题和边框的弹窗 -->
+    <Frame name="SpaUIDialogTemplate" frameStrata="DIALOG" enableMouse="true" movable="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                self:RegisterForDrag("LeftButton")
+                tinsert(UISpecialFrames, self:GetName())
+            </OnLoad>
+            <OnDragStart>
+                if not self.isLocked then
+                    self:StartMoving()
+                end
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Frames>
+            <Frame parentKey="Border" inherits="DialogBorderTemplate"/>
+            <Frame parentKey="Header" inherits="DialogHeaderTemplate"/>
+            <Frame parentKey="Container">
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="LEFT" x="14" y="0"/>
+                    <Anchor point="RIGHT" relativePoint="RIGHT" x="-14" y="0"/>
+                    <Anchor point="TOP" relativeKey="$parent.Header" relativePoint="BOTTOM" x="0" y="-4"/>
+                    <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="14"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+    </Frame>
+
+    <!-- 带标题和边框的可滚动弹窗 -->
+    <Frame name="SpaUIScrollDialogTemplate" frameStrata="DIALOG" enableMouse="true" movable="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                self:RegisterForDrag("LeftButton")
+                tinsert(UISpecialFrames, self:GetName())
+            </OnLoad>
+            <OnDragStart>
+                if not self.isLocked then
+                    self:StartMoving()
+                end
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Frames>
+            <Frame parentKey="Border" inherits="DialogBorderTemplate"/>
+            <Frame parentKey="Header" inherits="DialogHeaderTemplate"/>
+            <ScrollFrame parentKey="Container" inherits="UIPanelScrollFrameTemplate">
+                <Scripts>
+                    <OnLoad>
+                        self.ScrollBar:ClearAllPoints()
+                        self.ScrollBar:SetPoint("TOPRIGHT",self,"TOPRIGHT",0,-15)
+                        self.ScrollBar:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",0,20)
+                    </OnLoad>
+                </Scripts>
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="LEFT" x="14" y="0"/>
+                    <Anchor point="RIGHT" relativePoint="RIGHT" x="-14" y="0"/>
+                    <Anchor point="TOP" relativeKey="$parent.Header" relativePoint="BOTTOM" x="0" y="-4"/>
+                    <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="14"/>
+                </Anchors>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+
+    <!-- 带关闭按钮的窗口 -->
+    <Frame name="SpaUIBasicFrameTemplate" inherits="BasicFrameTemplateWithInset" enableMouse="true" movable="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                self:RegisterForDrag("LeftButton")
+                tinsert(UISpecialFrames, self:GetName())
+            </OnLoad>
+            <OnDragStart>
+                if not self.isLocked then
+                    self:StartMoving()
+                end
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+    </Frame>
+
+    <!-- 带关闭按钮的可滚动窗口 -->
+    <Frame name="SpaUIBasicScrollFrameTemplate" inherits="BasicFrameTemplateWithInset" enableMouse="true" movable="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                self:RegisterForDrag("LeftButton")
+                tinsert(UISpecialFrames, self:GetName())
+            </OnLoad>
+            <OnDragStart>
+                if not self.isLocked then
+                    self:StartMoving()
+                end
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Frames>
+            <ScrollFrame parentKey="Container" inherits="UIPanelScrollFrameTemplate">
+                <Scripts>
+                    <OnLoad>
+                        self.ScrollBar:ClearAllPoints()
+                        self.ScrollBar:SetPoint("TOPRIGHT",self,"TOPRIGHT",0,-15)
+                        self.ScrollBar:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",0,20)
+                    </OnLoad>
+                </Scripts>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.LeftBorder" relativePoint="TOPRIGHT" x="0" y="0"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.RightBorder" relativePoint="BOTTOMLEFT" x="0" y="4"/>
+                </Anchors>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+</Ui>

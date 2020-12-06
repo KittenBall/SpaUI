@@ -105,7 +105,7 @@ end
 
 function CreateEmoteTableFrame()
     local EmoteTableFrame = CreateFrame("Frame", "SpaUIEmoteTableFrame",
-                                        UIParent, "BasicFrameTemplateWithInset")
+                                        UIParent, "SpaUIBasicFrameTemplate")
     -- 响应Esc                                    
     tinsert(UISpecialFrames, EmoteTableFrame:GetName())
     EmoteTableFrame.Container = CreateFrame("Frame",

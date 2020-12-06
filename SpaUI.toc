@@ -11,6 +11,7 @@ Localization\Localization.lua
 
 #Core
 Core\Widget.lua
+Core\Widget.xml
 Core\Events.lua
 Core\LocalEvents.lua
 Core\Timer.lua

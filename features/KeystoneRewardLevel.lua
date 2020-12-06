@@ -64,11 +64,13 @@ local function CreateRewardFrames()
     end)
     ChallengesFrame.RewardButton:Hide()
 
-    local RewardContainer = CreateFrame("Frame","SpaUIChallengesRewardContainer",ChallengesFrame,"BasicFrameTemplateWithInset")
+    local RewardContainer = CreateFrame("Frame","SpaUIChallengesRewardContainer",ChallengesFrame,"SpaUIBasicFrameTemplate")
+    RewardContainer:EnableMouse(false)
+    RewardContainer:SetMovable(false)
     RewardContainer:SetWidth(200)
     RewardContainer:SetPoint("LEFT",ChallengesFrame,"RIGHT",0,0)
     RewardContainer:SetPoint("TOP",ChallengesFrame,"TOP",0,0)
-    RewardContainer:SetPoint("BOTTOM",ChallengesFrame,"BOTTOM",0,0)
+    RewardContainer:SetPoint("BOTTOM",ChallengesFrame,"BOTTOM",0,2)
 
     RewardContainer.TitleText:SetText(L["key_stone_reward_title"])
 
@@ -94,8 +96,6 @@ local function CreateRewardFrames()
         end
         RewardContainer["DifficultyText"..i]:SetPoint("LEFT",RewardContainer.LeftBorder,"RIGHT",0,0)
         RewardContainer["DifficultyText"..i]:SetPoint("RIGHT",RewardContainer,"CENTER",0,0)
-
-        local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)  
         
         RewardContainer["RewardText"..i] = RewardContainer:CreateFontString(RewardContainer,nil,i == MAX_REWARD_DIFFICULTY_LEVEL and "GameFontNormal" or"GameFontHighlight")
         if i == MAX_DIFFICULTY_LEVEL then

@@ -8,7 +8,7 @@ local Widget = SpaUI.Widget
 function SpaUI:GetWorldChannelID()
     local num = C_ChatInfo.GetNumActiveChannels()
     for i = 1, num do
-        local id, name = GetChannelName(i)
+        local _, name = GetChannelName(i)
         if name == BIG_FOOT_CHANNEL_NAME then return i end
     end
 end
@@ -97,6 +97,7 @@ local function CreateChatBarButton(bar, index)
         bar[type].Text:SetJustifyH("CENTER")
         bar[type].Text:SetText(text)
         bar[type]:SetScript("OnClick", OnWorldChannelButtonClick)
+        -- bar[type]:SetScript("")
     elseif type == "Roll" then
         -- roll点
         bar[type]:SetNormalTexture("Interface\\Addons\\SpaUI\\Media\\roll")
@@ -191,6 +192,7 @@ local function CreateChatBar()
     if ChatBar:GetBottom() < 0 then SpaUI:ShowMessage(L["chat_bar_outside"]) end
 
     CreateChatEmoteButton()
+    Widget.ChatBar = ChatBar
 end
 
 -- 切换聊天风格的时候更改锚点
