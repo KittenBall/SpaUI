@@ -133,5 +133,8 @@ L["chat_emote_lei_feng"] = "{雷锋}"
 L["chat_emote_injustice"] = "{委屈}"
 -- ChatCopy
 L["chat_copy_dialog_title"] = "聊天复制"
+-- RaidMarkers
+L["chat_raid_markers_clear_all"] = "清除全部"
+L["chat_raid_markers_tooltip"] = "（左键放置，右键清除）"
 
 SpaUI.Localization = L

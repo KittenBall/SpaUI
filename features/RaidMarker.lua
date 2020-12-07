@@ -1,34 +1,129 @@
 local addonName,SpaUI = ...
 local LocalEvents = SpaUI.LocalEvents
+local L = SpaUI.Localization
+local MAX_MARKERS_SIZE_RAW = 3
+local Widget = SpaUI.Widget
 
-local function SetIconPosition(parent,icon,index,num)
-    local angle = (index-1)*(360/num)
-    local x = 100 * cos(angle)
-    local y = 100 * sin(angle)
-    icon:SetPoint("CENTER",parent,"CENTER",x,y)
+local ALPHA_MARKER_NOT_SET = 0.5
+local ALPHA_MARKER_ON_ENTER = 1
+local ALPHA_MARKER_ACTIVE = 0.8
+
+local MARKERS = {
+    {id = 1, tooltipText = WORLD_MARKER1..L["chat_raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_6", type = "macro", leftmacrotext = "/wm 1", rightmacrotext = "/run ClearRaidMarker(1)"},
+    {id = 2, tooltipText = WORLD_MARKER2..L["chat_raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_4", type = "macro", leftmacrotext = "/wm 2", rightmacrotext = "/run ClearRaidMarker(2)"},
+    {id = 3, tooltipText = WORLD_MARKER3..L["chat_raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_3", type = "macro", leftmacrotext = "/wm 3", rightmacrotext = "/run ClearRaidMarker(3)"},
+    {id = 4, tooltipText = WORLD_MARKER4..L["chat_raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_7", type = "macro", leftmacrotext = "/wm 4", rightmacrotext = "/run ClearRaidMarker(4)"},
+    {tooltipText = L["chat_raid_markers_clear_all"], texture= "Interface\\Addons\\SpaUI\\media\\raid_markers_clear", type = "function",OnClick = function(self)
+       for i = 1, 8 do
+           ClearRaidMarker(i)
+       end
+    end},
+    {id = 5, tooltipText = WORLD_MARKER5..L["chat_raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_1", type = "macro", leftmacrotext = "/wm 5", rightmacrotext = "/run ClearRaidMarker(5)"},
+    {id = 6, tooltipText = WORLD_MARKER6..L["chat_raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_2", type = "macro", leftmacrotext = "/wm 6", rightmacrotext = "/run ClearRaidMarker(6)"},
+    {id = 7, tooltipText = WORLD_MARKER7..L["chat_raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_5", type = "macro", leftmacrotext = "/wm 7", rightmacrotext = "/run ClearRaidMarker(7)"},
+    {id = 7, tooltipText = WORLD_MARKER8..L["chat_raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_8", type = "macro", leftmacrotext = "/wm 8", rightmacrotext = "/run ClearRaidMarker()"},
+}
+
+-- 设置标记属性
+local function SetUpMarker(parent,icon,index,slotWidth,slotHeight,raw,col)
+    icon.info = MARKERS[index]
+    icon:SetSize(64,64)
+    icon:SetNormalTexture(icon.info.texture)
+    if icon.info.type == "macro" then
+        icon.alphaOnLeave = ALPHA_MARKER_NOT_SET
+        icon:SetAttribute("type1","macro")
+        icon:SetAttribute("macrotext1",icon.info.leftmacrotext)
+        icon:SetAttribute("type2","macro")
+        icon:SetAttribute("macrotext2",icon.info.rightmacrotext)
+        icon:RegisterForClicks("AnyUp")
+    elseif icon.info.type == "function" then
+        icon.alphaOnLeave = ALPHA_MARKER_ON_ENTER
+        icon:SetScript("OnClick",icon.info.OnClick)
+    end
+    icon:SetAlpha(icon.alphaOnLeave)
+    
+
+    local x = (col-1)*slotWidth+slotWidth/2
+    local y = -((raw-1)*slotHeight+slotHeight/2)
+    icon:SetPoint("CENTER",parent,"TOPLEFT",x,y)
+
+    -- 标记鼠标是否悬停，用于处理刷新状态时的透明度变更问题
+    icon.IsEnter = false
+    icon:SetScript("OnEnter",function(self)
+        self.IsEnter = true
+        self:SetAlpha(ALPHA_MARKER_ON_ENTER)
+        GameTooltip:SetOwner(self,"ANCHOR_RIGHT")
+        GameTooltip:AddLine(self.info.tooltipText)
+        GameTooltip:Show()
+    end)
+    icon:SetScript("OnLeave",function(self)
+        self.IsEnter = false
+        self:SetAlpha(self.alphaOnLeave)
+        GameTooltip:Hide()
+    end)
+
+    if icon.info.id then
+        icon.ActiveMark = icon:CreateTexture(nil,"OVERLAY")
+        icon.ActiveMark:SetTexture("Interface\\Addons\\SpaUI\\media\\raid_marker_active")
+        icon.ActiveMark:SetSize(18,18)
+        icon.ActiveMark:SetPoint("TOPRIGHT",icon,"TOPRIGHT",5,5)
+        icon.ActiveMark:Hide() 
+    end
 end
 
-local function CreateRaidMarkerFrame()
-    local Frame = CreateFrame("Frame","SpaUIRaidMarkerFrame",UIParent)
-    Frame:SetSize(600,600)
-    for i=1,8 do
-        local icon = Frame:CreateTexture()
-        icon:SetSize(48,48)
-        icon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_"..i)  
-        SetIconPosition(parent,icon,i,8)
-        Frame["Icon"..i] = icon
+-- 检查标记放置状态
+local function CheckRaidMarkerStatus(frame)
+    print(111)
+    if not frame or not frame.Icons then return end
+    for i = 1,#frame.Icons do
+        local icon = frame.Icons[i]
+        if icon and icon.info and icon.info.id then
+            icon.IsActive =  IsRaidMarkerActive(icon.info.id)
+            icon.alphaOnLeave = icon.IsActive and ALPHA_MARKER_ACTIVE or ALPHA_MARKER_NOT_SET
+            if not icon.IsEnter then
+                icon:SetAlpha(icon.alphaOnLeave)
+            end
+            if icon.IsActive then
+                icon.ActiveMark:Show()
+            else
+                icon.ActiveMark:Hide()
+            end
+        end
     end
-    Frame.timer = 0
-    Frame:SetScript("OnUpdate",function(self,elapsed)
-        if self.timer>=1 then
+end
+
+-- todo 单人模式不允许呼出，快捷键呼出面板
+local function CreateRaidMarkerFrame()
+    local RaidMarkerFrame = CreateFrame("Button","SpaUIRaidMarkerContainer",UIParent)
+    RaidMarkerFrame:SetSize(300,300)
+    RaidMarkerFrame:SetPoint("CENTER",UIParent,"CENTER")
+    RaidMarkerFrame:SetFrameStrata("DIALOG")
+    RaidMarkerFrame:Hide()
+    RaidMarkerFrame.timer = 0
+    
+    -- 列数
+    local col = ceil(#MARKERS/MAX_MARKERS_SIZE_RAW)
+    local markerSlotWidth = RaidMarkerFrame:GetWidth()/MAX_MARKERS_SIZE_RAW
+    local markerSlotHeight = RaidMarkerFrame:GetHeight()/col
+
+    RaidMarkerFrame.Icons = {}
+    for i=1,#MARKERS do
+        local icon = CreateFrame("Button","SpaUIRaidMarker"..i,RaidMarkerFrame,"SecureActionButtonTemplate")
+        SetUpMarker(RaidMarkerFrame,icon,i,markerSlotWidth,markerSlotHeight,math.modf((i-1)/MAX_MARKERS_SIZE_RAW)+1,(i-1)%MAX_MARKERS_SIZE_RAW+1)
+        RaidMarkerFrame.Icons[i] = icon
+    end
+
+    -- 检测标记状态
+    RaidMarkerFrame:SetScript("OnUpdate",function(self,elapsed)
+        if self.timer >=0.3 then
             self.timer = 0
-        local x,y = GetCursorPosition()
-        local scale = UIParent:GetEffectiveScale()
-        print(UIParent:GetWidth(),UIParent:GetHeight(),x/scale,y/scale)
+            CheckRaidMarkerStatus(self)
         else
             self.timer = self.timer + elapsed
         end
     end)
+
+    Widget.RaidMarkers = RaidMarkerFrame
 end
 
 SpaUI:CallbackLocalEventOnce(LocalEvents.ADDON_INITIALIZATION,CreateRaidMarkerFrame)
