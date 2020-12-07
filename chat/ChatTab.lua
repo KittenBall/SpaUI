@@ -72,10 +72,7 @@ for i = 1, NUM_CHAT_WINDOWS do
     if f ~= COMBATLOG then
         local am = f.AddMessage
         f.AddMessage = function(frame, text, ...)
-            return am(frame,
-                      gsub(text,
-                           '|h%[(%d+)%. ' .. BIG_FOOT_CHANNEL_NAME .. '%]|h',
-                           '|h%[%1%. 世界%]|h'), ...)
+            return am(frame,gsub(text,'|h%[(%d+)%. ' .. BIG_FOOT_CHANNEL_NAME .. '%]|h','|h%[%1%. 世界%]|h'), ...)
         end
     end
 end

@@ -44,6 +44,7 @@ Features\RaidMarkerIcon.lua
 Features\FriendsList.lua
 Features\KeyStoneRewardLevel.lua
 Features\TradeTabs.lua
+Features\RaidMarker.lua
 
 #Chat 参考了TinyChat
 Chat\ChatBar.lua

@@ -77,7 +77,7 @@ local function CreateCopyButton()
     CopyButton:SetNormalTexture("Interface\\Addons\\SpaUI\\Media\\copy")
     CopyButton:SetHighlightTexture("Interface\\Addons\\SpaUI\\Media\\copy_highlight")
     CopyButton:SetPushedTexture("Interface\\Addons\\SpaUI\\Media\\copy_pressed")
-    CopyButton:SetScript("OnEnter",function(self) self:SetAlpha(ALPHA_ENTER) end)
+    CopyButton:SetScript("OnEnter",function(self) self:SetAlpha(ALPHA_ENTER) end) 
     CopyButton:SetScript("OnLeave",function(self) self:SetAlpha(ALPHA_LEAVE) end)
     CopyButton:SetScript("OnClick",function() Widget:ToggleCopyFrame() end)
     Widget.CopyButton = CopyButton
