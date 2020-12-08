@@ -1,0 +1,5 @@
+<Bindings>
+    <Binding name="SPAUI_TOGGLE_RAID_MARKER_FRAME" runOnUp="false" category="|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI">
+        SpaUI.Widget:ToggleRaidMarkersFrame()
+    </Binding>
+</Bindings>

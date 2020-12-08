@@ -36,4 +36,23 @@
         <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
         <CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
     </CheckButton>
+
+    <Button name="EncounterJournalSavedInstanceButton" virtual = "true">
+        <Size x="55" y="32"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Icon" file="Interface\EncounterJournal\UI-EJ-Icons">
+                    <Size x="30" y="30"/>
+                    <Anchors>
+                        <Anchor point="LEFT" relativePoint="LEFT"/>
+                    </Anchors>
+                </Texture>
+                <FontString name="$parentText" inherits="GameFontWhite" justifyH="LEFT" parentKey="Text">
+			    	<Anchors>
+			    		<Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.Icon"/>
+			    	</Anchors>
+			    </FontString>
+            </Layer>
+        </Layers>
+    </Button>
 </Ui>

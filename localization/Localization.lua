@@ -6,6 +6,8 @@ L["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
 L["addon_loaded_tip"] = L["addon_name"]..":|cFF00BFFF%s|r 已载入"
 L["debug_format"] = L["addon_name"].." Debug:%s"
 L["message_format"] = L["addon_name"]..":%s"
+-- Bindings
+L["toggle_raid_marker_frame"] = "打开/关闭世界标记窗口"
 -- Config
 L["config_addon_version"] = "|cFF00BFFF%s|r"
 L["config_addon_author"] = "作者：|cFFADD8E6%s|r"
@@ -134,7 +136,10 @@ L["chat_emote_injustice"] = "{委屈}"
 -- ChatCopy
 L["chat_copy_dialog_title"] = "聊天复制"
 -- RaidMarkers
-L["chat_raid_markers_clear_all"] = "清除全部"
-L["chat_raid_markers_tooltip"] = "（左键放置，右键清除）"
+L["raid_markers_clear_all"] = "清除全部，右键同时隐藏面板"
+L["raid_markers_tooltip"] = "（左键放置，右键清除）"
+L["raid_markers_nopermission"] = "你不在队伍里或你不是团长（助理）！"
+-- EJ SavedInstances
+L["ej_loaded_fail"] = "地下城手册显示副本进度模块加载失败"
 
 SpaUI.Localization = L

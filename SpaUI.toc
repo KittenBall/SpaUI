@@ -9,6 +9,8 @@
 #Localization
 Localization\Localization.lua
 
+Init.lua
+
 #Core
 Core\Widget.lua
 Core\Widget.xml
@@ -45,6 +47,7 @@ Features\FriendsList.lua
 Features\KeyStoneRewardLevel.lua
 Features\TradeTabs.lua
 Features\RaidMarker.lua
+Features\EncounterJournalSavedInstances.lua
 
 #Chat 参考了TinyChat
 Chat\ChatBar.lua
