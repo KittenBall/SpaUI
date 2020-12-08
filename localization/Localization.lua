@@ -141,5 +141,8 @@ L["raid_markers_tooltip"] = "（左键放置，右键清除）"
 L["raid_markers_nopermission"] = "你不在队伍里或你不是团长（助理）！"
 -- EJ SavedInstances
 L["ej_loaded_fail"] = "地下城手册显示副本进度模块加载失败"
+L["ej_savedinstance_progress"] = "|c%s%d/%d|r"
+L['ej_savedinstance_boss_killed'] = "|cFFFF0000已击杀|r"
+L['ej_savedinstance_boss_not_killed'] = "|cFF00FF00未击杀|r"
 
 SpaUI.Localization = L

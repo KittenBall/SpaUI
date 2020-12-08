@@ -37,8 +37,8 @@
         <CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
     </CheckButton>
 
-    <Button name="EncounterJournalSavedInstanceButton" virtual = "true">
-        <Size x="55" y="32"/>
+    <Frame name="EncounterJournalSavedInstanceFrame" virtual = "true">
+        <Size x="65" y="24"/>
         <Layers>
             <Layer level="ARTWORK">
                 <Texture parentKey="Icon" file="Interface\EncounterJournal\UI-EJ-Icons">
@@ -54,5 +54,5 @@
 			    </FontString>
             </Layer>
         </Layers>
-    </Button>
+    </Frame>
 </Ui>

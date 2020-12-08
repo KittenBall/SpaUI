@@ -1,7 +1,9 @@
+-- 地下城手册显示副本进度
 local addonName,SpaUI = ...
 local L = SpaUI.Localization
-local GetNumSavedInstances,GetSavedInstanceInfo = GetNumSavedInstances,GetSavedInstanceInfo
--- 地下城手册显示副本进度
+local GetNumSavedInstances,GetSavedInstanceInfo,GetSavedInstanceEncounterInfo = GetNumSavedInstances,GetSavedInstanceInfo,GetSavedInstanceEncounterInfo
+local COMPLETED_COLOR = "FFFF0000"
+local UNCOMPLETED_COLOR = "FF00FF00"
 
 local IconIndexByDifficulty = {
     [1] = 11, -- 普通地下城
@@ -34,12 +36,20 @@ local function OnEncounterJournalShow(self)
     local SpaUISavedInstances = self.SpaUISavedInstances
     local savedInstancesNum = GetNumSavedInstances()
     for i=1,savedInstancesNum do
-        local name,_,_,difficultyID,locked,_,_,isRaid,_,_,numEncounters,encounterProgress = GetSavedInstanceInfo(i)
+        local name,_,_,difficultyID,locked,_,_,isRaid,_,difficultyName,numEncounters,encounterProgress = GetSavedInstanceInfo(i)
         if locked then
             local savedInstance = {}
             savedInstance.isRaid = isRaid
             savedInstance.numEncounters = numEncounters
             savedInstance.encounterProgress = encounterProgress
+            savedInstance.difficultyName = difficultyName
+            -- 存入副本的BOSS击杀信息
+            for j=1,numEncounters do
+                local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j)
+                savedInstance[j] = {}
+                savedInstance[j].bossName = bossName
+                savedInstance[j].isKilled = isKilled
+            end
             if not SpaUISavedInstances[name] then
                SpaUISavedInstances[name] = {}
             end
@@ -54,23 +64,61 @@ local function OnEncounterJournalShow(self)
     end
 end
 
--- 在副本按钮上显示或隐藏进度
--- 未完工
-local function ShowOrHideSavedInstanceForInstanceButton(button,difficultyID,savedInstance)
-    if not button.savedInstanceButtons then
-        button.savedInstanceButtons = {}
+-- 副本进度窗体鼠标指向显示Boss击杀信息
+local function OnSaveInstanceFrameEnter(self)
+    if not self.info then return end
+    GameTooltip:SetOwner(self,"ANCHOR_RIGHT")
+    GameTooltip:AddLine(self.info.difficultyName)
+    for _,bossInfo in ipairs(self.info) do
+        GameTooltip:AddDoubleLine(bossInfo.bossName,bossInfo.isKilled and L["ej_savedinstance_boss_killed"] or L["ej_savedinstance_boss_not_killed"])
     end
-    if not button.savedInstanceButtons[difficultyID] then
-        local iconIndex = IconIndexForDifficultyID(difficultyID)
-        if iconIndex then
-            local savedInstanceButton = CreateFrame("Button",button:GetName().."SavedInstanceButtonDifficulty"..difficultyID,button,"EncounterJournalSavedInstanceButton")
-            EncounterJournal_SetFlagIcon(savedInstanceButton.Icon,iconIndex)
-            savedInstanceButton:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-5,3)
-            button.savedInstanceButtons[difficultyID] = savedInstanceButton
+    GameTooltip:Show()
+end
+
+-- 在副本按钮上显示或隐藏进度
+local function ShowOrHideSavedInstanceForInstanceButton(button,savedInstances)
+    if not button.savedInstanceFrames then
+        button.savedInstanceFrames = {}
+    end
+    local offsetY = 0
+    if savedInstances then
+        -- 显示需要显示的难度
+        for difficultyID,savedInstance in pairs(savedInstances) do
+            if not button.savedInstanceFrames[difficultyID] then
+                local iconIndex = IconIndexForDifficultyID(difficultyID)
+                if iconIndex then
+                    -- 创建frame并设置难度图标
+                    local savedInstanceFrame = CreateFrame("Frame",button:GetName().."SavedInstanceFrameDifficulty"..difficultyID,button,"EncounterJournalSavedInstanceFrame")
+                    EncounterJournal_SetFlagIcon(savedInstanceFrame.Icon,iconIndex)
+                    savedInstanceFrame:SetScript("OnLeave",function()
+                        GameTooltip:Hide()
+                    end)
+                    button.savedInstanceFrames[difficultyID] = savedInstanceFrame
+                end
+            end
+            
+            local savedInstanceFrame = button.savedInstanceFrames[difficultyID]
+            local encounterProgress,numEncounters = savedInstance.encounterProgress,savedInstance.numEncounters
+            local color = (encounterProgress<numEncounters) and UNCOMPLETED_COLOR or COMPLETED_COLOR
+            savedInstanceFrame.info = savedInstance
+            savedInstanceFrame.Text:SetText(L["ej_savedinstance_progress"]:format(color,encounterProgress,numEncounters))
+            savedInstanceFrame:ClearAllPoints()
+            savedInstanceFrame:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",0,offsetY)
+            savedInstanceFrame:SetScript("OnEnter",OnSaveInstanceFrameEnter)
+            savedInstanceFrame:Show()
+            offsetY = offsetY + savedInstanceFrame:GetHeight()
+        end
+        -- 将不需要显示的难度隐藏
+        for difficultyID,frame in pairs(button.savedInstanceFrames) do
+            if not savedInstances[difficultyID] then
+                frame:Hide()
+            end
+        end
+    else
+        for _,frame in pairs(button.savedInstanceFrames) do
+            frame:Hide() 
         end
     end
-    local savedInstanceButton = button.savedInstanceButtons[difficultyID]
-    savedInstanceButton.Text:SetText(savedInstance.encounterProgress.."/"..savedInstance.numEncounters)
 end
 
 -- 副本列表显示时回调
@@ -89,13 +137,11 @@ local function OnEncounterJournalListInstances()
             break
         end
         local instanceTitle = instanceButton.tooltipTitle
-        
         if SpaUISavedInstances[instanceTitle] then
-            for difficultyID,savedInstance in pairs(SpaUISavedInstances[instanceTitle]) do
-                ShowOrHideSavedInstanceForInstanceButton(instanceButton,difficultyID,savedInstance)
-            end            
+            ShowOrHideSavedInstanceForInstanceButton(instanceButton,SpaUISavedInstances[instanceTitle])
+        else
+            ShowOrHideSavedInstanceForInstanceButton(instanceButton)
         end
-
         index = index + 1
     end
 end
