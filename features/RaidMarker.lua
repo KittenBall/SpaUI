@@ -14,6 +14,10 @@ local MARKERS = {
     {id = 2, tooltipText = WORLD_MARKER2..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_4", type = "macro", leftmacrotext = "/wm 2\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(2)"},
     {id = 3, tooltipText = WORLD_MARKER3..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_3", type = "macro", leftmacrotext = "/wm 3\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(3)"},
     {id = 4, tooltipText = WORLD_MARKER4..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_7", type = "macro", leftmacrotext = "/wm 4\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(4)"},
+    {id = 5, tooltipText = WORLD_MARKER5..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_1", type = "macro", leftmacrotext = "/wm 5\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(5)"},
+    {id = 6, tooltipText = WORLD_MARKER6..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_2", type = "macro", leftmacrotext = "/wm 6\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(6)"},
+    {id = 7, tooltipText = WORLD_MARKER7..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_5", type = "macro", leftmacrotext = "/wm 7\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(7)"},
+    {id = 8, tooltipText = WORLD_MARKER8..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_8", type = "macro", leftmacrotext = "/wm 8\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(8)"},
     {tooltipText = L["raid_markers_clear_all"], texture= "Interface\\Addons\\SpaUI\\media\\raid_markers_clear", type = "function",OnClick = function(self,button)
         for i = 1, 8 do
             ClearRaidMarker(i)
@@ -21,15 +25,11 @@ local MARKERS = {
         if button == "RightButton" then
             SpaUIRaidMarkerContainer:Hide()
         end
-    end},
-    {id = 5, tooltipText = WORLD_MARKER5..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_1", type = "macro", leftmacrotext = "/wm 5\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(5)"},
-    {id = 6, tooltipText = WORLD_MARKER6..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_2", type = "macro", leftmacrotext = "/wm 6\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(6)"},
-    {id = 7, tooltipText = WORLD_MARKER7..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_5", type = "macro", leftmacrotext = "/wm 7\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(7)"},
-    {id = 7, tooltipText = WORLD_MARKER8..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_8", type = "macro", leftmacrotext = "/wm 8\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker()"},
+    end}
 }
 
 -- 设置标记属性
-local function SetUpMarker(parent,icon,index,slotWidth,slotHeight,raw,col)
+local function SetUpMarker(parent,icon,index,degree)
     icon.info = MARKERS[index]
     icon:SetSize(64,64)
     icon:SetNormalTexture(icon.info.texture)
@@ -40,16 +40,15 @@ local function SetUpMarker(parent,icon,index,slotWidth,slotHeight,raw,col)
         icon:SetAttribute("macrotext1",icon.info.leftmacrotext)
         icon:SetAttribute("type2","macro")
         icon:SetAttribute("macrotext2",icon.info.rightmacrotext)
+        local x = 125 * cos(degree*(index-1))
+        local y = 125 * sin(degree*(index-1))
+        icon:SetPoint("CENTER",parent,"CENTER",x,y)
     elseif icon.info.type == "function" then
         icon.alphaOnLeave = ALPHA_MARKER_ON_ENTER
         icon:SetScript("OnClick",function(self,button) icon.info.OnClick(self,button) end)
+        icon:SetPoint("CENTER",parent,"CENTER")
     end
     icon:SetAlpha(icon.alphaOnLeave)
-    
-
-    local x = (col-1)*slotWidth+slotWidth/2
-    local y = -((raw-1)*slotHeight+slotHeight/2)
-    icon:SetPoint("CENTER",parent,"TOPLEFT",x,y)
 
     -- 标记鼠标是否悬停，用于处理刷新状态时的透明度变更问题
     icon.IsEnter = false
@@ -98,21 +97,27 @@ end
 -- todo 单人模式不允许呼出，快捷键呼出面板
 local function CreateRaidMarkerFrame()
     local RaidMarkerFrame = CreateFrame("Button","SpaUIRaidMarkerContainer",UIParent)
-    RaidMarkerFrame:SetSize(300,300)
+    RaidMarkerFrame:SetSize(500,500)
     RaidMarkerFrame:SetPoint("CENTER",UIParent,"CENTER")
     RaidMarkerFrame:SetFrameStrata("DIALOG")
     RaidMarkerFrame:Hide()
     RaidMarkerFrame.timer = 0
-    
-    -- 列数
-    local col = ceil(#MARKERS/MAX_MARKERS_SIZE_RAW)
-    local markerSlotWidth = RaidMarkerFrame:GetWidth()/MAX_MARKERS_SIZE_RAW
-    local markerSlotHeight = RaidMarkerFrame:GetHeight()/col
 
     RaidMarkerFrame.Icons = {}
+
+    local markerCount = 0;
+
+    for _,markerInfo in ipairs(MARKERS) do
+        if markerInfo.id then
+           markerCount = markerCount + 1
+        end
+    end
+
+    local degree = 360/markerCount
+
     for i=1,#MARKERS do
         local icon = CreateFrame("Button","SpaUIRaidMarker"..i,RaidMarkerFrame,"SecureActionButtonTemplate")
-        SetUpMarker(RaidMarkerFrame,icon,i,markerSlotWidth,markerSlotHeight,math.modf((i-1)/MAX_MARKERS_SIZE_RAW)+1,(i-1)%MAX_MARKERS_SIZE_RAW+1)
+        SetUpMarker(RaidMarkerFrame,icon,i,degree)
         RaidMarkerFrame.Icons[i] = icon
     end
 
