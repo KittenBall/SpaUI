@@ -33,26 +33,39 @@ PetHitIndicator.SetText = function() end
 -- TargetFrameNameBackground:SetTexture()
 
 -- 目标身上来源为自己的Debuff放大
-local function TargetFrame_UpdateDebuffAnchor_OnHook(_, frame, index)
-    local _, _, _, _, _, _, source = UnitAura("target", index, "HARMFUL")
-    if (source and source == "player") then
-        _G[frame .. index]:SetSize(28, 28)
-    end
-end
+-- local function TargetFrame_UpdateDebuffAnchor_OnHook(_, frame, index)
+--     local _, _, _, _, _, _, source = UnitAura("target", index, "HARMFUL")
+--     if (source and source == "player") then
+--         _G[frame .. index]:SetSize(28, 28)
+--     end
+-- end
 
-hooksecurefunc("TargetFrame_UpdateDebuffAnchor",
-               TargetFrame_UpdateDebuffAnchor_OnHook)
+-- hooksecurefunc("TargetFrame_UpdateDebuffAnchor",
+--                TargetFrame_UpdateDebuffAnchor_OnHook)
 
 -- 目标身上来源为自己的Buff放大
-local function TargetFrame_UpdateBuffAnchor_OnHook(_, frame, index)
-    local _, _, _, _, _, _, source = UnitAura("target", index)
-    if (source and source == "player") then
-        _G[frame .. index]:SetSize(28, 28)
+-- local function TargetFrame_UpdateBuffAnchor_OnHook(_, frame, index)
+--     local _, _, _, _, _, _, source = UnitAura("target", index)
+--     if (source and source == "player") then
+--         _G[frame .. index]:SetSize(28, 28)
+--     end
+-- end
+
+-- hooksecurefunc("TargetFrame_UpdateBuffAnchor",
+--                TargetFrame_UpdateBuffAnchor_OnHook)
+
+-- 目标BUFF或DEBUFF显示冷却数字
+local function TargetFrame_AURA_ShowCooldown(_,frame,index)
+    if not _G[frame..index].Cooldown.HasSetCooldown then
+        _G[frame..index].Cooldown:SetCountdownFont("UnitFramesAuraCountdownFont")
+        _G[frame..index].Cooldown:SetHideCountdownNumbers(false)
+        _G[frame..index].Cooldown.HasSetCooldown = true
     end
 end
 
-hooksecurefunc("TargetFrame_UpdateBuffAnchor",
-               TargetFrame_UpdateBuffAnchor_OnHook)
+hooksecurefunc("TargetFrame_UpdateBuffAnchor",TargetFrame_AURA_ShowCooldown)
+
+hooksecurefunc("TargetFrame_UpdateDebuffAnchor",TargetFrame_AURA_ShowCooldown)
 
 -- 显示Buff来源
 local function UNIT_AURA_OnHooK(self, unit, buffIndex, filter)

@@ -29,11 +29,6 @@ end
 local function RewardContainer_OnShow()
     if not ChallengesFrame or not SpaUIChallengesRewardContainer then return end
     UpdateRewardButtonVisibility(true)
-    for i = MAX_DIFFICULTY_LEVEL, 1, -1 do
-        SpaUIChallengesRewardContainer["DifficultyText"..i]:SetText(tostring(i))
-        local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
-        SpaUIChallengesRewardContainer["RewardText"..i]:SetText(("%d(%d)"):format(endOfRunLevel,weeklyLevel))
-    end
 
     local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
     if keyStoneLevel then
@@ -88,6 +83,7 @@ local function CreateRewardFrames()
 
 
     for i = MAX_DIFFICULTY_LEVEL, 1, -1 do
+        local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
         RewardContainer["DifficultyText"..i] = RewardContainer:CreateFontString(RewardContainer,nil,i == MAX_REWARD_DIFFICULTY_LEVEL and "GameFontNormal" or"GameFontHighlight")
         if i == MAX_DIFFICULTY_LEVEL then
             RewardContainer["DifficultyText"..i]:SetPoint("TOP",RewardContainer.DifficultyTextTitle,"BOTTOM",0,-RewardItemMargin)
@@ -96,6 +92,7 @@ local function CreateRewardFrames()
         end
         RewardContainer["DifficultyText"..i]:SetPoint("LEFT",RewardContainer.LeftBorder,"RIGHT",0,0)
         RewardContainer["DifficultyText"..i]:SetPoint("RIGHT",RewardContainer,"CENTER",0,0)
+        SpaUIChallengesRewardContainer["DifficultyText"..i]:SetText(tostring(i))
         
         RewardContainer["RewardText"..i] = RewardContainer:CreateFontString(RewardContainer,nil,i == MAX_REWARD_DIFFICULTY_LEVEL and "GameFontNormal" or"GameFontHighlight")
         if i == MAX_DIFFICULTY_LEVEL then
@@ -105,6 +102,7 @@ local function CreateRewardFrames()
         end
         RewardContainer["RewardText"..i]:SetPoint("RIGHT",RewardContainer.RightBorder,"LEFT",0,0)
         RewardContainer["RewardText"..i]:SetPoint("LEFT",RewardContainer,"CENTER",0,0)
+        SpaUIChallengesRewardContainer["RewardText"..i]:SetText(("%d(%d)"):format(endOfRunLevel,weeklyLevel))
     end
 
     RewardContainer.CurrentDifficultyText = RewardContainer:CreateFontString(RewardContainer,nil,"GameFontGreen")
@@ -126,11 +124,17 @@ local function CreateRewardFrames()
     RewardContainer:SetScript("OnHide",function() UpdateRewardButtonVisibility(false) end)
 end
 
-local function OnBlizzardChallengesUIInitialize(event,name)  
-    if name == 'Blizzard_ChallengesUI' then
-        CreateRewardFrames()
-        return true
+if IsAddOnLoaded('Blizzard_ChallengesUI') then
+    CreateRewardFrames()
+else
+    local function OnBlizzardChallengesUIInitialize(event,name)
+        if name == 'Blizzard_ChallengesUI' then
+            CreateRewardFrames()
+            return true
+        end
     end
+    
+    SpaUI:RegisterEvent('ADDON_LOADED',OnBlizzardChallengesUIInitialize)
 end
 
-SpaUI:RegisterEvent('ADDON_LOADED',OnBlizzardChallengesUIInitialize)
+

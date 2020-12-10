@@ -1,7 +1,6 @@
 local addonName,SpaUI = ...
 local LocalEvents = SpaUI.LocalEvents
 local L = SpaUI.Localization
-local MAX_MARKERS_SIZE_RAW = 3
 local Widget = SpaUI.Widget
 
 local ALPHA_MARKER_NOT_SET = 0.5
@@ -10,22 +9,15 @@ local ALPHA_MARKER_ACTIVE = 0.8
 local IsRaidMarkerActive = IsRaidMarkerActive
 
 local MARKERS = {
-    {id = 1, tooltipText = WORLD_MARKER1..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_6", type = "macro", leftmacrotext = "/wm 1\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(1)"},
-    {id = 2, tooltipText = WORLD_MARKER2..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_4", type = "macro", leftmacrotext = "/wm 2\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(2)"},
-    {id = 3, tooltipText = WORLD_MARKER3..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_3", type = "macro", leftmacrotext = "/wm 3\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(3)"},
-    {id = 4, tooltipText = WORLD_MARKER4..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_7", type = "macro", leftmacrotext = "/wm 4\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(4)"},
-    {id = 5, tooltipText = WORLD_MARKER5..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_1", type = "macro", leftmacrotext = "/wm 5\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(5)"},
-    {id = 6, tooltipText = WORLD_MARKER6..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_2", type = "macro", leftmacrotext = "/wm 6\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(6)"},
-    {id = 7, tooltipText = WORLD_MARKER7..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_5", type = "macro", leftmacrotext = "/wm 7\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(7)"},
-    {id = 8, tooltipText = WORLD_MARKER8..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_8", type = "macro", leftmacrotext = "/wm 8\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/run ClearRaidMarker(8)"},
-    {tooltipText = L["raid_markers_clear_all"], texture= "Interface\\Addons\\SpaUI\\media\\raid_markers_clear", type = "function",OnClick = function(self,button)
-        for i = 1, 8 do
-            ClearRaidMarker(i)
-        end
-        if button == "RightButton" then
-            SpaUIRaidMarkerContainer:Hide()
-        end
-    end}
+    {id = 1, tooltipText = WORLD_MARKER1..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_6", type = "macro", leftmacrotext = "/wm 1\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/cwm 1"},
+    {id = 2, tooltipText = WORLD_MARKER2..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_4", type = "macro", leftmacrotext = "/wm 2\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/cwm 2"},
+    {id = 3, tooltipText = WORLD_MARKER3..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_3", type = "macro", leftmacrotext = "/wm 3\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/cwm 3"},
+    {id = 4, tooltipText = WORLD_MARKER4..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_7", type = "macro", leftmacrotext = "/wm 4\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/cwm 4"},
+    {id = 5, tooltipText = WORLD_MARKER5..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_1", type = "macro", leftmacrotext = "/wm 5\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/cwm 5"},
+    {id = 6, tooltipText = WORLD_MARKER6..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_2", type = "macro", leftmacrotext = "/wm 6\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/cwm 6"},
+    {id = 7, tooltipText = WORLD_MARKER7..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_5", type = "macro", leftmacrotext = "/wm 7\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/cwm 7"},
+    {id = 8, tooltipText = WORLD_MARKER8..L["raid_markers_tooltip"], texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_8", type = "macro", leftmacrotext = "/wm 8\n/run SpaUIRaidMarkerContainer:Hide()", rightmacrotext = "/cwm 8"},
+    {tooltipText = L["raid_markers_clear_all"], texture= "Interface\\Addons\\SpaUI\\media\\raid_markers_clear", type = "macro",leftmacrotext="/cwm "..ALL,rightmacrotext="/cwm "..ALL.."\n/run SpaUIRaidMarkerContainer:Hide()"}
 }
 
 -- 设置标记属性
@@ -34,20 +26,21 @@ local function SetUpMarker(parent,icon,index,degree)
     icon:SetSize(64,64)
     icon:SetNormalTexture(icon.info.texture)
     icon:RegisterForClicks("AnyUp")
-    if icon.info.type == "macro" then
+    icon:SetAttribute("type1","macro")
+    icon:SetAttribute("macrotext1",icon.info.leftmacrotext)
+    icon:SetAttribute("type2","macro")
+    icon:SetAttribute("macrotext2",icon.info.rightmacrotext)
+
+    if icon.info.id then
         icon.alphaOnLeave = ALPHA_MARKER_NOT_SET
-        icon:SetAttribute("type1","macro")
-        icon:SetAttribute("macrotext1",icon.info.leftmacrotext)
-        icon:SetAttribute("type2","macro")
-        icon:SetAttribute("macrotext2",icon.info.rightmacrotext)
         local x = 125 * cos(degree*(index-1))
-        local y = 125 * sin(degree*(index-1))
+        local y = 125 * sin(degree*(index-1))     
         icon:SetPoint("CENTER",parent,"CENTER",x,y)
-    elseif icon.info.type == "function" then
+    else
         icon.alphaOnLeave = ALPHA_MARKER_ON_ENTER
-        icon:SetScript("OnClick",function(self,button) icon.info.OnClick(self,button) end)
         icon:SetPoint("CENTER",parent,"CENTER")
     end
+
     icon:SetAlpha(icon.alphaOnLeave)
 
     -- 标记鼠标是否悬停，用于处理刷新状态时的透明度变更问题
@@ -94,10 +87,12 @@ local function CheckRaidMarkerStatus(frame)
     end
 end
 
--- todo 单人模式不允许呼出，快捷键呼出面板
+-- 单人模式不允许呼出，快捷键呼出面板
 local function CreateRaidMarkerFrame()
-    local RaidMarkerFrame = CreateFrame("Button","SpaUIRaidMarkerContainer",UIParent)
-    RaidMarkerFrame:SetSize(500,500)
+    local RaidMarkerFrame = CreateFrame("Button","SpaUIRaidMarkerContainer",UIParent,"SecureHandlerStateTemplate")
+    tinsert(UISpecialFrames,RaidMarkerFrame:GetName())
+    RaidMarkerFrame:EnableMouse(false)
+    RaidMarkerFrame:SetSize(350,350)
     RaidMarkerFrame:SetPoint("CENTER",UIParent,"CENTER")
     RaidMarkerFrame:SetFrameStrata("DIALOG")
     RaidMarkerFrame:Hide()
@@ -136,6 +131,8 @@ end
 
 function Widget:ToggleRaidMarkersFrame()
     local RaidMarkers = self.RaidMarkers
+    if not RaidMarkers then return end
+    
     if RaidMarkers:IsShown() then
         RaidMarkers:Hide()
     else

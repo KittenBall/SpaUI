@@ -55,4 +55,9 @@
             </Layer>
         </Layers>
     </Frame>
+
+    <!-- 单位框体光环冷却文本字体 -->
+    <Font name="UnitFramesAuraCountdownFont" inherits="Game10Font_o1" virtual="true">
+        <Color r="1.0" g="1.0" b="1.0"/>
+    </Font>
 </Ui>

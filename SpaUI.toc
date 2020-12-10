@@ -44,7 +44,7 @@ Features\Reputation.lua
 Features\RaidMarkerIcon.lua
 #修改自SUI
 Features\FriendsList.lua
-Features\KeyStoneRewardLevel.lua
+#Features\KeyStoneRewardLevel.lua
 Features\TradeTabs.lua
 Features\RaidMarker.lua
 Features\EncounterJournalSavedInstances.lua
