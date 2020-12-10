@@ -2,9 +2,28 @@
 local addonName,SpaUI = ...
 local L = SpaUI.Localization
 
-local MAX_DIFFICULTY_LEVEL = 16
-local MAX_REWARD_DIFFICULTY_LEVEL = 15
+local MAX_DIFFICULTY_LEVEL = 15
+local MAX_REWARD_DIFFICULTY_LEVEL = 14
 local RewardItemMargin = 5
+
+-- todo 写死
+-- local REWARD_LEVELS = {
+--     {level = 1,endofRunLevel = 183, weeklyLevel = 0},
+--     {level = 2,endofRunLevel = 187, weeklyLevel = 0},
+--     {level = 3,endofRunLevel = 190, weeklyLevel = 0},
+--     {level = 4,endofRunLevel = 194, weeklyLevel = 0},
+--     {level = 5,endofRunLevel = 194, weeklyLevel = 0},
+--     {level = 6,endofRunLevel = 197, weeklyLevel = 0},
+--     {level = 7,endofRunLevel = 200, weeklyLevel = 0},
+--     {level = 8,endofRunLevel = 200, weeklyLevel = 0},
+--     {level = 9,endofRunLevel = 200, weeklyLevel = 0},
+--     {level = 10,endofRunLevel = 203, weeklyLevel = 0},
+--     {level = 11,endofRunLevel = 203, weeklyLevel = 0},
+--     {level = 12,endofRunLevel = 203, weeklyLevel = 0},
+--     {level = 13,endofRunLevel = 183, weeklyLevel = 0},
+--     {level = 14,endofRunLevel = 183, weeklyLevel = 0},
+--     {level = 15,endofRunLevel = 183, weeklyLevel = 0},
+-- }
 
 local function ShowTooltip(event)
     if event == "OnEnter" then
@@ -29,6 +48,12 @@ end
 local function RewardContainer_OnShow()
     if not ChallengesFrame or not SpaUIChallengesRewardContainer then return end
     UpdateRewardButtonVisibility(true)
+
+    for i = MAX_DIFFICULTY_LEVEL,1,-1 do
+        local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
+        SpaUIChallengesRewardContainer["DifficultyText"..i]:SetText(tostring(i))
+        SpaUIChallengesRewardContainer["RewardText"..i]:SetText(("%d(%d)"):format(endOfRunLevel,weeklyLevel))
+    end
 
     local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
     if keyStoneLevel then
@@ -83,7 +108,6 @@ local function CreateRewardFrames()
 
 
     for i = MAX_DIFFICULTY_LEVEL, 1, -1 do
-        local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
         RewardContainer["DifficultyText"..i] = RewardContainer:CreateFontString(RewardContainer,nil,i == MAX_REWARD_DIFFICULTY_LEVEL and "GameFontNormal" or"GameFontHighlight")
         if i == MAX_DIFFICULTY_LEVEL then
             RewardContainer["DifficultyText"..i]:SetPoint("TOP",RewardContainer.DifficultyTextTitle,"BOTTOM",0,-RewardItemMargin)
@@ -92,7 +116,6 @@ local function CreateRewardFrames()
         end
         RewardContainer["DifficultyText"..i]:SetPoint("LEFT",RewardContainer.LeftBorder,"RIGHT",0,0)
         RewardContainer["DifficultyText"..i]:SetPoint("RIGHT",RewardContainer,"CENTER",0,0)
-        SpaUIChallengesRewardContainer["DifficultyText"..i]:SetText(tostring(i))
         
         RewardContainer["RewardText"..i] = RewardContainer:CreateFontString(RewardContainer,nil,i == MAX_REWARD_DIFFICULTY_LEVEL and "GameFontNormal" or"GameFontHighlight")
         if i == MAX_DIFFICULTY_LEVEL then
@@ -102,7 +125,6 @@ local function CreateRewardFrames()
         end
         RewardContainer["RewardText"..i]:SetPoint("RIGHT",RewardContainer.RightBorder,"LEFT",0,0)
         RewardContainer["RewardText"..i]:SetPoint("LEFT",RewardContainer,"CENTER",0,0)
-        SpaUIChallengesRewardContainer["RewardText"..i]:SetText(("%d(%d)"):format(endOfRunLevel,weeklyLevel))
     end
 
     RewardContainer.CurrentDifficultyText = RewardContainer:CreateFontString(RewardContainer,nil,"GameFontGreen")
