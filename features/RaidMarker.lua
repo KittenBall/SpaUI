@@ -89,13 +89,14 @@ end
 
 -- 单人模式不允许呼出，快捷键呼出面板
 local function CreateRaidMarkerFrame()
-    local RaidMarkerFrame = CreateFrame("Button","SpaUIRaidMarkerContainer",UIParent,"SecureHandlerStateTemplate")
+    local RaidMarkerFrame = CreateFrame("Frame","SpaUIRaidMarkerContainer",UIParent)
     tinsert(UISpecialFrames,RaidMarkerFrame:GetName())
     RaidMarkerFrame:EnableMouse(false)
     RaidMarkerFrame:SetSize(350,350)
     RaidMarkerFrame:SetPoint("CENTER",UIParent,"CENTER")
     RaidMarkerFrame:SetFrameStrata("DIALOG")
     RaidMarkerFrame:Hide()
+    -- RegisterStateDriver(RaidMarkerFrame,"visibility","[combat] show;[nocombat] hide")
     RaidMarkerFrame.timer = 0
 
     RaidMarkerFrame.Icons = {}
@@ -129,10 +130,11 @@ local function CreateRaidMarkerFrame()
     Widget.RaidMarkers = RaidMarkerFrame
 end
 
+-- todo
 function Widget:ToggleRaidMarkersFrame()
     local RaidMarkers = self.RaidMarkers
     if not RaidMarkers then return end
-    
+
     if RaidMarkers:IsShown() then
         RaidMarkers:Hide()
     else
@@ -140,7 +142,7 @@ function Widget:ToggleRaidMarkersFrame()
         or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then      
             RaidMarkers:Show()
         else
-            SpaUI:ShowMessage(L["raid_markers_nopermission"])    
+            SpaUI:ShowMessage(L["raid_markers_nopermission"])
         end
     end
 end

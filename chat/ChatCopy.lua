@@ -18,12 +18,9 @@ local function OnCopyFrameShow()
         local text = ""
         for i = 1, ChatFrame:GetNumMessages() do
             local line = ChatFrame:GetMessageInfo(i)
-            if not MessageIsProtected(line) and line:len()>0 then 
+            if line:len()>0 then 
                 if text:len()>0 then text = text.."\n" end
                 text = text..line
-                text = text:gsub("|T[^\\]+\\[^\\]+\\[Uu][Ii]%-[Rr][Aa][Ii][Dd][Tt][Aa][Rr][Gg][Ee][Tt][Ii][Nn][Gg][Ii][Cc][Oo][Nn]_(%d)[^|]+|t", "{rt%1}")
-                text = text:gsub("|T13700([1-8])[^|]+|t", "{rt%1}")
-                text = text:gsub("|T[^|]+|t", "")
             end
         end
         Widget.CopyFrame.EditBox:SetText(text)

@@ -2,28 +2,30 @@
 local addonName,SpaUI = ...
 local L = SpaUI.Localization
 
-local MAX_DIFFICULTY_LEVEL = 15
-local MAX_REWARD_DIFFICULTY_LEVEL = 14
 local RewardItemMargin = 5
 
--- todo 写死
--- local REWARD_LEVELS = {
---     {level = 1,endofRunLevel = 183, weeklyLevel = 0},
---     {level = 2,endofRunLevel = 187, weeklyLevel = 0},
---     {level = 3,endofRunLevel = 190, weeklyLevel = 0},
---     {level = 4,endofRunLevel = 194, weeklyLevel = 0},
---     {level = 5,endofRunLevel = 194, weeklyLevel = 0},
---     {level = 6,endofRunLevel = 197, weeklyLevel = 0},
---     {level = 7,endofRunLevel = 200, weeklyLevel = 0},
---     {level = 8,endofRunLevel = 200, weeklyLevel = 0},
---     {level = 9,endofRunLevel = 200, weeklyLevel = 0},
---     {level = 10,endofRunLevel = 203, weeklyLevel = 0},
---     {level = 11,endofRunLevel = 203, weeklyLevel = 0},
---     {level = 12,endofRunLevel = 203, weeklyLevel = 0},
---     {level = 13,endofRunLevel = 183, weeklyLevel = 0},
---     {level = 14,endofRunLevel = 183, weeklyLevel = 0},
---     {level = 15,endofRunLevel = 183, weeklyLevel = 0},
--- }
+-- 系统api有问题，懒得查原因，直接写死
+local REWARD_LEVELS = {
+    {level = 2, firstWeek = 187, endofRunLevel = 187, weeklyLevel = 200},
+    {level = 3, firstWeek = 190, endofRunLevel = 190, weeklyLevel = 203},
+    {level = 4, firstWeek = 194, endofRunLevel = 194, weeklyLevel = 207},
+    {level = 5, firstWeek = 194, endofRunLevel = 194, weeklyLevel = 210},
+    {level = 6, firstWeek = 197, endofRunLevel = 197, weeklyLevel = 210},
+    {level = 7, firstWeek = 200, endofRunLevel = 200, weeklyLevel = 213},
+    {level = 8, firstWeek = 200, endofRunLevel = 200, weeklyLevel = 216},
+    {level = 9, firstWeek = 200, endofRunLevel = 200, weeklyLevel = 216},
+    {level = 10, firstWeek = 203, endofRunLevel = 207, weeklyLevel = 220},
+    {level = 11, firstWeek = 203, endofRunLevel = 207, weeklyLevel = 220},
+    {level = 12, firstWeek = 203, endofRunLevel = 207, weeklyLevel = 223},
+    {level = 13, firstWeek = 203, endofRunLevel = 207, weeklyLevel = 223},
+    {level = 14, firstWeek = 203, endofRunLevel = 207, weeklyLevel = 226},
+    {level = 15, firstWeek = 203, endofRunLevel = 210, weeklyLevel = 226},
+}
+
+local function IsFirstWeek()
+    local dateTable = {year=2020,month=12,day=17,hour=7,min=0,sec=0}
+    return GetServerTime()<time(dateTable)
+end
 
 local function ShowTooltip(event)
     if event == "OnEnter" then
@@ -46,20 +48,37 @@ local function UpdateRewardButtonVisibility(show)
 end
 
 local function RewardContainer_OnShow()
-    if not ChallengesFrame or not SpaUIChallengesRewardContainer then return end
-    UpdateRewardButtonVisibility(true)
-
-    for i = MAX_DIFFICULTY_LEVEL,1,-1 do
-        local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
-        SpaUIChallengesRewardContainer["DifficultyText"..i]:SetText(tostring(i))
-        SpaUIChallengesRewardContainer["RewardText"..i]:SetText(("%d(%d)"):format(endOfRunLevel,weeklyLevel))
+    SpaUI:Log("RewardContainer_OnShow")
+    if not ChallengesFrame or not SpaUIChallengesRewardContainer then
+        if not ChallengesFrame then
+            SpaUI:Log("RewardContainer_OnShow ChallengesFrame nil")
+        else
+            SpaUI:Log("RewardContainer_OnShow SpaUIChallengesRewardContainer nil")
+        end
+        return 
     end
+    UpdateRewardButtonVisibility(true)
 
     local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
     if keyStoneLevel then
-        local weeklyLevel,endOfRunLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(keyStoneLevel) 
-        SpaUIChallengesRewardContainer.CurrentReward:SetText(("%d(%d)"):format(endOfRunLevel,weeklyLevel))
-        SpaUIChallengesRewardContainer.CurrentDifficultyLevel:SetText(tostring(keyStoneLevel))
+        local rewardInfo
+        for _,info in ipairs(REWARD_LEVELS) do
+            if info.level == keyStoneLevel then  
+                rewardInfo = info
+                break
+            end
+        end
+        if not rewardInfo then
+            local last = REWARD_LEVELS[#REWARD_LEVELS]
+            if keyStoneLevel > last.level then
+                rewardInfo = last
+            end
+        end
+        if rewardInfo then
+            local isFirstWeek = IsFirstWeek()
+            SpaUIChallengesRewardContainer.CurrentReward:SetText(("%d(%d)"):format(isFirstWeek and rewardInfo.firstWeek or rewardInfo.endofRunLevel,rewardInfo.weeklyLevel))
+            SpaUIChallengesRewardContainer.CurrentDifficultyLevel:SetText(tostring(rewardInfo.level))
+        end
     else
         SpaUIChallengesRewardContainer.CurrentReward:SetText("")
         SpaUIChallengesRewardContainer.CurrentDifficultyLevel:SetText("")
@@ -67,7 +86,11 @@ local function RewardContainer_OnShow()
 end
 
 local function CreateRewardFrames()
-    if not ChallengesFrame then return end
+    if not ChallengesFrame then 
+        SpaUI:Log("ChallengesFrame is nil")
+        return
+    end
+    SpaUI:Log("CreateRewardFrames")
 
     ChallengesFrame.RewardButton = CreateFrame("Button","ChallengesFrameRewardButton",ChallengesFrame)
     ChallengesFrame.RewardButton:SetWidth(18)
@@ -94,50 +117,53 @@ local function CreateRewardFrames()
 
     RewardContainer.TitleText:SetText(L["key_stone_reward_title"])
 
-    RewardContainer.DifficultyTextTitle = RewardContainer:CreateFontString(RewardContainer,nil,"GameFontNormal")
+    RewardContainer.DifficultyTextTitle = RewardContainer:CreateFontString(nil,nil,"GameFontNormal")
     RewardContainer.DifficultyTextTitle:SetText(L["key_stone_reward_title_difficulty"])
     RewardContainer.DifficultyTextTitle:SetPoint("LEFT",RewardContainer.LeftBorder,"RIGHT",0,0)
     RewardContainer.DifficultyTextTitle:SetPoint("TOP",RewardContainer.LeftBorder,"TOP",0,-RewardItemMargin)
     RewardContainer.DifficultyTextTitle:SetPoint("RIGHT",RewardContainer,"CENTER",0,0)
 
-    RewardContainer.RewardTextTitle = RewardContainer:CreateFontString(RewardContainer,nil,"GameFontNormal")
+    RewardContainer.RewardTextTitle = RewardContainer:CreateFontString(nil,nil,"GameFontNormal")
     RewardContainer.RewardTextTitle:SetText(L["key_stone_reward_title_level"])
     RewardContainer.RewardTextTitle:SetPoint("RIGHT",RewardContainer.RightBorder,"LEFT",0,0)
     RewardContainer.RewardTextTitle:SetPoint("TOP",RewardContainer.RightBorder,"TOP",0,-RewardItemMargin)
     RewardContainer.RewardTextTitle:SetPoint("LEFT",RewardContainer,"CENTER",0,0)
 
-
-    for i = MAX_DIFFICULTY_LEVEL, 1, -1 do
-        RewardContainer["DifficultyText"..i] = RewardContainer:CreateFontString(RewardContainer,nil,i == MAX_REWARD_DIFFICULTY_LEVEL and "GameFontNormal" or"GameFontHighlight")
-        if i == MAX_DIFFICULTY_LEVEL then
+    local isFirstWeek = IsFirstWeek()
+    for i = #REWARD_LEVELS, 1, -1 do
+        local rewardInfo = REWARD_LEVELS[i]
+        RewardContainer["DifficultyText"..i] = RewardContainer:CreateFontString(nil,nil,"GameFontHighlight")
+        if i == #REWARD_LEVELS then
             RewardContainer["DifficultyText"..i]:SetPoint("TOP",RewardContainer.DifficultyTextTitle,"BOTTOM",0,-RewardItemMargin)
         else
             RewardContainer["DifficultyText"..i]:SetPoint("TOP",RewardContainer["DifficultyText"..(i+1)],"BOTTOM",0,-RewardItemMargin)
         end
         RewardContainer["DifficultyText"..i]:SetPoint("LEFT",RewardContainer.LeftBorder,"RIGHT",0,0)
         RewardContainer["DifficultyText"..i]:SetPoint("RIGHT",RewardContainer,"CENTER",0,0)
+        RewardContainer["DifficultyText"..i]:SetText(rewardInfo.level)
         
-        RewardContainer["RewardText"..i] = RewardContainer:CreateFontString(RewardContainer,nil,i == MAX_REWARD_DIFFICULTY_LEVEL and "GameFontNormal" or"GameFontHighlight")
-        if i == MAX_DIFFICULTY_LEVEL then
+        RewardContainer["RewardText"..i] = RewardContainer:CreateFontString(nil,nil,"GameFontHighlight")
+        if i == #REWARD_LEVELS then
             RewardContainer["RewardText"..i]:SetPoint("TOP",RewardContainer.RewardTextTitle,"BOTTOM",0,-RewardItemMargin)
         else
             RewardContainer["RewardText"..i]:SetPoint("TOP",RewardContainer["RewardText"..(i+1)],"BOTTOM",0,-RewardItemMargin)
         end
         RewardContainer["RewardText"..i]:SetPoint("RIGHT",RewardContainer.RightBorder,"LEFT",0,0)
         RewardContainer["RewardText"..i]:SetPoint("LEFT",RewardContainer,"CENTER",0,0)
+        RewardContainer["RewardText"..i]:SetText(("%d(%d)"):format(isFirstWeek and rewardInfo.firstWeek or rewardInfo.endofRunLevel,rewardInfo.weeklyLevel))
     end
 
-    RewardContainer.CurrentDifficultyText = RewardContainer:CreateFontString(RewardContainer,nil,"GameFontGreen")
+    RewardContainer.CurrentDifficultyText = RewardContainer:CreateFontString(nil,nil,"GameFontGreen")
     RewardContainer.CurrentDifficultyText:SetText(L["key_stone_current_owned"])
     RewardContainer.CurrentDifficultyText:SetPoint("LEFT",RewardContainer.LeftBorder,"RIGHT",0,0)
     RewardContainer.CurrentDifficultyText:SetPoint("TOP",RewardContainer["RewardText1"],"BOTTOM",0,-RewardItemMargin)
 
-    RewardContainer.CurrentDifficultyLevel = RewardContainer:CreateFontString(RewardContainer,nil,"GameFontGreen")
+    RewardContainer.CurrentDifficultyLevel = RewardContainer:CreateFontString(nil,nil,"GameFontGreen")
     RewardContainer.CurrentDifficultyLevel:SetPoint("LEFT",RewardContainer.LeftBorder,"RIGHT",0,0)
     RewardContainer.CurrentDifficultyLevel:SetPoint("TOP",RewardContainer["DifficultyText1"],"BOTTOM",0,-RewardItemMargin)
     RewardContainer.CurrentDifficultyLevel:SetPoint("RIGHT",RewardContainer,"CENTER",0,0)
 
-    RewardContainer.CurrentReward = RewardContainer:CreateFontString(RewardContainer,nil,"GameFontGreen")
+    RewardContainer.CurrentReward = RewardContainer:CreateFontString(nil,nil,"GameFontGreen")
     RewardContainer.CurrentReward:SetPoint("RIGHT",RewardContainer.RightBorder,"LEFT",0,0)
     RewardContainer.CurrentReward:SetPoint("TOP",RewardContainer["RewardText1"],"BOTTOM",0,-RewardItemMargin)
     RewardContainer.CurrentReward:SetPoint("LEFT",RewardContainer,"CENTER",0,0)
@@ -146,16 +172,26 @@ local function CreateRewardFrames()
     RewardContainer:SetScript("OnHide",function() UpdateRewardButtonVisibility(false) end)
 end
 
+local function OnChallengesFrameShow()
+    if not SpaUIChallengesRewardContainer then
+        CreateRewardFrames()
+    end
+end
+
+local function OnBlizzardChallengesUIInitialize(event,name)
+    if name == 'Blizzard_ChallengesUI' then
+        SpaUI:Log("OnBlizzardChallengesUIInitialize")
+        if ChallengesFrame then
+            ChallengesFrame:HookScript("OnShow",OnChallengesFrameShow)
+        end
+        return true
+    end
+end
+
 if IsAddOnLoaded('Blizzard_ChallengesUI') then
+    SpaUI:Log("Blizzard_ChallengesUI Has Loaded,Create Rewardframes now!")
     CreateRewardFrames()
 else
-    local function OnBlizzardChallengesUIInitialize(event,name)
-        if name == 'Blizzard_ChallengesUI' then
-            CreateRewardFrames()
-            return true
-        end
-    end
-    
     SpaUI:RegisterEvent('ADDON_LOADED',OnBlizzardChallengesUIInitialize)
 end
 

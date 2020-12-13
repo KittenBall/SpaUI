@@ -23,7 +23,7 @@ function Config:ToggleDebugMode(debugMode)
     local configPanel = Config.ConfigPanel
     if SpaUIConfigDB.DebugMode then
        if not configPanel.DebugButton then
-            local debugButton = Config:CreateOptionCheckButton(configPanel,L["config_debug"],SpaUIConfigDB.IsDebug,L["config_debug_tooltip"])
+            local debugButton = self:CreateOptionCheckButton(configPanel,L["config_debug"],SpaUIConfigDB.IsDebug,L["config_debug_tooltip"])
             debugButton:SetPoint("BOTTOMLEFT",configPanel,"BOTTOMLEFT",15,15)
             debugButton.SetValue = function(self,checked)
                 SpaUIConfigDB.IsDebug = (checked == "1") and true or false

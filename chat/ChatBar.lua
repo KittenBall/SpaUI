@@ -30,48 +30,22 @@ local CHANNEL_WORLD_DEFAULT_COLOR_R = 1
 local CHANNEL_WORLD_DEFAULT_COLOR_G = 0.75294125080109
 local CHANNEL_WORLD_DEFAULT_COLOR_B = 0.75294125080109
 
-local function OnWorldChannelButtonMouseOver(self,type)
-    if type == "Enter" then
-       local channelTarget = SpaUI:GetWorldChannelID()
-       if not channelTarget then
-            GameTooltip:SetOwner(self,"ANCHOR_RIGHT") 
-            GameTooltip:AddLine(L["chat_bar_world_channel_tooltip_join"])
-            GameTooltip:Show()
-        elseif IsAltKeyDown() then
-            GameTooltip:SetOwner(self,"ANCHOR_RIGHT") 
-            GameTooltip:AddLine(L["chat_bar_world_channel_tooltip_leave"])
-            GameTooltip:Show()
-        end
-    else
-        GameTooltip:Hide()
-    end
-end
-
 -- 点击世界频道按钮
 local function OnWorldChannelButtonClick(button,key)
     local channelTarget = SpaUI:GetWorldChannelID()
-    if key == "LeftButton" then
-        if channelTarget then
-            local chatTypeInfo = ChatTypeInfo["CHANNEL" .. channelTarget]
-            -- 改下世界频道的按钮颜色
-            if chatTypeInfo then
-                local text = SpaUI:formatColorTextByRGBPerc(
-                                 L["chat_bar_channel_world"], chatTypeInfo.r,
-                                 chatTypeInfo.g, chatTypeInfo.b)
-                button.Text:SetText(text)
-            end
-            local editbox = ChatFrame_OpenChat("", ChatFrame1)
-            editbox:SetAttribute("chatType", "CHANNEL")
-            editbox:SetAttribute("channelTarget", channelTarget)
-            ChatEdit_UpdateHeader(editbox)
-        else
-            JoinChannelByName(BIG_FOOT_CHANNEL_NAME)
-            ChatFrame_AddChannel(ChatFrame1,BIG_FOOT_CHANNEL_NAME)
+    if channelTarget then
+        local chatTypeInfo = ChatTypeInfo["CHANNEL" .. channelTarget]
+        -- 改下世界频道的按钮颜色
+        if chatTypeInfo then
+            local text = SpaUI:formatColorTextByRGBPerc(
+                             L["chat_bar_channel_world"], chatTypeInfo.r,
+                             chatTypeInfo.g, chatTypeInfo.b)
+            button.Text:SetText(text)
         end
-    elseif key == "RightButton" then
-        if channelTarget then
-            LeaveChannelByName(BIG_FOOT_CHANNEL_NAME)
-        end
+        local editbox = ChatFrame_OpenChat("", ChatFrame1)
+        editbox:SetAttribute("chatType", "CHANNEL")
+        editbox:SetAttribute("channelTarget", channelTarget)
+        ChatEdit_UpdateHeader(editbox)
     end
 end
 
@@ -118,10 +92,7 @@ local function CreateChatBarButton(bar, index)
         bar[type].Text:SetPoint("CENTER", bar[type], "CENTER")
         bar[type].Text:SetJustifyH("CENTER")
         bar[type].Text:SetText(text)
-        bar[type]:RegisterForClicks("LeftButtonUp","RightButtonUp")
         bar[type]:SetScript("OnClick", function(self,button) OnWorldChannelButtonClick(self,button) end)
-        bar[type]:HookScript("OnEnter",function(self) OnWorldChannelButtonMouseOver(self,"Enter") end)
-        bar[type]:HookScript("OnLeave",function(self) OnWorldChannelButtonMouseOver(self,"Leave") end)
     elseif type == "Roll" then
         -- roll点
         bar[type]:SetNormalTexture("Interface\\Addons\\SpaUI\\Media\\roll")

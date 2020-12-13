@@ -55,17 +55,17 @@ PetHitIndicator.SetText = function() end
 --                TargetFrame_UpdateBuffAnchor_OnHook)
 
 -- 目标BUFF或DEBUFF显示冷却数字
-local function TargetFrame_AURA_ShowCooldown(_,frame,index)
-    if not _G[frame..index].Cooldown.HasSetCooldown then
-        _G[frame..index].Cooldown:SetCountdownFont("UnitFramesAuraCountdownFont")
-        _G[frame..index].Cooldown:SetHideCountdownNumbers(false)
-        _G[frame..index].Cooldown.HasSetCooldown = true
-    end
-end
+-- local function TargetFrame_AURA_ShowCooldown(_,frame,index)
+--     if not _G[frame..index].Cooldown.HasSetCooldown then
+--         _G[frame..index].Cooldown:SetCountdownFont("UnitFramesAuraCountdownFont")
+--         _G[frame..index].Cooldown:SetHideCountdownNumbers(false)
+--         _G[frame..index].Cooldown.HasSetCooldown = true
+--     end
+-- end
 
-hooksecurefunc("TargetFrame_UpdateBuffAnchor",TargetFrame_AURA_ShowCooldown)
+-- hooksecurefunc("TargetFrame_UpdateBuffAnchor",TargetFrame_AURA_ShowCooldown)
 
-hooksecurefunc("TargetFrame_UpdateDebuffAnchor",TargetFrame_AURA_ShowCooldown)
+-- hooksecurefunc("TargetFrame_UpdateDebuffAnchor",TargetFrame_AURA_ShowCooldown)
 
 -- 显示Buff来源
 local function UNIT_AURA_OnHooK(self, unit, buffIndex, filter)

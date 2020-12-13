@@ -55,10 +55,10 @@ local function CreateConfigPanel()
     if Config.ConfigPanel then return end
     local SpaUIConfigPanel =
         CreateFrame("Frame", "SpaUIConfigPanel", UIParent)
+    Config.ConfigPanel = SpaUIConfigPanel
     CreateConfigHomePage(SpaUIConfigPanel)
     SpaUIConfigPanel.name = L["addon_name"]
     InterfaceOptions_AddCategory(SpaUIConfigPanel)
-    Config.ConfigPanel = SpaUIConfigPanel
 end
 
 SpaUI:CallbackLocalEventOnce(LocalEvents.ADDON_INITIALIZATION, CreateConfigPanel)
