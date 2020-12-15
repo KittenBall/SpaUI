@@ -1,6 +1,7 @@
 local addonName,SpaUI = ...
 local Config = SpaUI.Config
 local L = SpaUI.Localization
+local Widget = SpaUI.Widget
 
 SlashCmdList["RELOADUI"] = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"
@@ -15,11 +16,12 @@ SlashCmdList["SPAUI"] = function(msg)
         InterfaceOptionsFrame_OpenToCategory(Config.ConfigPanel)
     else
         local cmd,value = strsplit(" ",msg)
+        cmd = string.upper(cmd)
         -- debug模式
-        if cmd == "debugMode" then
+        if cmd == "DEBUGMODE" then
             Config:ToggleDebugMode(value=="1")
-        elseif cmd == "align" then
-            SpaUI:ToggleAlign()
+        elseif cmd == "ALIGN" then
+            Widget:ToggleAlign()
         else
             SpaUI:ShowMessage(L["config_macro"])
         end

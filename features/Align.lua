@@ -1,7 +1,7 @@
 local addonName,SpaUI = ...
 local Widget = SpaUI.Widget
 
-function SpaUI:ToggleAlign()
+function Widget:ToggleAlign()
 	if Widget.AlignFrame then
 		Widget.AlignFrame:Hide()
 		Widget.AlignFrame = nil		

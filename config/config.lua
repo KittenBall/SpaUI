@@ -19,6 +19,7 @@ end
 -- 切换debug模式
 function Config:ToggleDebugMode(debugMode)
     SpaUIConfigDB.DebugMode = debugMode
+    SpaUI:ShowMessage(debugMode and L["config_debugmode_enable"] or L["config_debugmode_disable"])
     if not Config.ConfigPanel then return end
     local configPanel = Config.ConfigPanel
     if SpaUIConfigDB.DebugMode then

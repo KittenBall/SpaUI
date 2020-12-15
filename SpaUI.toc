@@ -22,7 +22,7 @@ Core\Core.lua
 #Config
 Config\Config.lua
 Config\ConfigPanel.lua
-Config\Macros.lua
+Config\Cmds.lua
 
 #Features
 Features\Templates.xml
@@ -56,3 +56,6 @@ Chat\ChatTab.lua
 Chat\ChatEmote.lua
 Chat\ChatCopy.lua
 Chat\ChatLinkTooltips.lua
+
+#Quest
+Quest\AutoQuest.lua
