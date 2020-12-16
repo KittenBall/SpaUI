@@ -4,7 +4,7 @@ local L = {}
 
 L["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
 L["addon_loaded_tip"] = L["addon_name"]..":|cFF00BFFF%s|r 已载入"
-L["debug_format"] = L["addon_name"].." Debug:%s"
+L["debug_format"] = L["addon_name"].." Debug:"
 L["message_format"] = L["addon_name"]..":%s"
 -- Bindings
 L["toggle_raid_marker_frame"] = "打开/关闭世界标记窗口"

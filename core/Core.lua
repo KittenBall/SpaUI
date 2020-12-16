@@ -3,15 +3,9 @@ local addonName, SpaUI = ...
 local L = SpaUI.Localization
 local LocalEvents = SpaUI.LocalEvents
 
-function SpaUI:Log(msg)
-    if SpaUIConfigDB.DebugMode and SpaUIConfigDB.IsDebug then
-        print(L["debug_format"]:format(msg))
-    end
-end
-
-function SpaUI:Log(msg, ...)
-    if SpaUIConfigDB.DebugMode and SpaUIConfigDB.IsDebug then
-        print(L["debug_format"]:format(msg), ...)
+function SpaUI:Log(...)
+    if SpaUIConfigDB.IsDebug then
+        print(L["debug_format"],...)
     end
 end
 

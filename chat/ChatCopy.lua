@@ -18,7 +18,7 @@ local function OnCopyFrameShow()
         local text = ""
         for i = 1, ChatFrame:GetNumMessages() do
             local line = ChatFrame:GetMessageInfo(i)
-            if line:len()>0 then 
+            if not MessageIsProtected(line) and line:len()>0 then 
                 if text:len()>0 then text = text.."\n" end
                 text = text..line
             end
