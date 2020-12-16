@@ -146,5 +146,7 @@ L["ej_loaded_fail"] = "地下城手册显示副本进度模块加载失败"
 L["ej_savedinstance_progress"] = "|c%s%d/%d|r"
 L['ej_savedinstance_boss_killed'] = "|cFFFF0000已击杀|r"
 L['ej_savedinstance_boss_not_killed'] = "|cFF00FF00未击杀|r"
+-- Quest
+L["auto_quest_turnin_button_tooltip"] = "自动交接任务开关\n开启后按住Shift键可以暂时屏蔽"
 
 SpaUI.Localization = L

@@ -1,5 +1,6 @@
 local addonName,SpaUI = ...
 local L = SpaUI.Localization
+local LocalEvents = SpaUI.LocalEvents
 local IsShiftKeyDown,UnitName = IsShiftKeyDown,UnitName
 local GetNumActiveQuests,GetNumAvailableQuests = GetNumActiveQuests,GetNumAvailableQuests
 local GossipGetNumActiveQuests,GossipGetNumAvailableQuests = C_GossipInfo.GetNumActiveQuests,C_GossipInfo.GetNumAvailableQuests
@@ -11,9 +12,15 @@ local QuestFrame = QuestFrame
 local IsQuestCompletable = IsQuestCompletable
 local Widget = SpaUI.Widget
 
+-- 是否为自动交接模式
+local function IsAutoTurnIn()
+    return SpaUIConfigDBPC.AutoTurnIn and not IsShiftKeyDown()
+end
+
 -- 任务详情自动接受任务
 -- todo 过滤某些npc的某些任务
 local function OnQuestDetail(questStartItemID)
+    if not IsAutoTurnIn() then return end
     local npc = UnitName("npc")
     if QuestFrame and QuestFrame:IsVisible() and npc then
         AcceptQuest()
@@ -23,6 +30,7 @@ end
 -- 任务列表
 -- 先自动完成可完成的任务，再接受未接受的任务
 local function OnQuestGreeting()
+    if not IsAutoTurnIn() then return end
     local activeNum = GetNumActiveQuests()
     local availableNum = GetNumAvailableQuests()
     
@@ -43,25 +51,28 @@ end
 
 -- 任务完成页
 local function OnQuestComplete()
+    if not IsAutoTurnIn() then return end
     if not (GetNumQuestChoices() > 1) and QuestFrame:IsVisible() then
         GetQuestReward(1)
     end
 end
 
 local function OnQuestProgress()
+    if not IsAutoTurnIn() then return end
     if QuestFrame:IsVisible() and IsQuestCompletable() then
         CompleteQuest()
     end
 end
 
 local function OnGossipShow()
+    if not IsAutoTurnIn() then return end
     local activeNum = GossipGetNumActiveQuests()
     local availableNum = GossipGetNumAvailableQuests()
     if activeNum > 0  then
         local activeQuests = GetActiveQuests()
         for i = 1, activeNum do
             local quest = activeQuests[i]
-            if quest and quest.isComplete and GossipFramemmm:IsVisible() then
+            if quest and quest.isComplete and GossipFrame:IsVisible() then
                 SpaUI:Log("自动选择可完成任务："..quest.title)
                 GossipSelectActiveQuest(i)
                 break
@@ -86,40 +97,36 @@ local AutoQuestSwitchTable = {
 
 local function AutoQuest(event,...)
     SpaUI:Log(event,...)
+    if not IsAutoTurnIn() then return end
     local func = AutoQuestSwitchTable[event]
     if func then
         func(...)
     end
 end
 
-SpaUI:RegisterEvent('QUEST_ACCEPTED',AutoQuest)
-SpaUI:RegisterEvent('QUEST_AUTOCOMPLETE',AutoQuest)
-SpaUI:RegisterEvent('QUEST_COMPLETE',AutoQuest)
-SpaUI:RegisterEvent('QUEST_DETAIL',AutoQuest)
-SpaUI:RegisterEvent('QUEST_LOG_CRITERIA_UPDATE',AutoQuest)
--- SpaUI:RegisterEvent('QUEST_LOG_UPDATE',test)
-SpaUI:RegisterEvent('QUEST_POI_UPDATE',AutoQuest)
-SpaUI:RegisterEvent('QUEST_REMOVED',AutoQuest)
-SpaUI:RegisterEvent('QUEST_TURNED_IN',AutoQuest)
--- SpaUI:RegisterEvent('QUEST_WATCH_LIST_CHANGED',test)
-SpaUI:RegisterEvent('QUEST_WATCH_UPDATE',AutoQuest)
--- SpaUI:RegisterEvent('QUESTLINE_UPDATE',test)
-SpaUI:RegisterEvent('TASK_PROGRESS_UPDATE',AutoQuest)
--- SpaUI:RegisterEvent('TREASURE_PICKER_CACHE_FLUSH',test)
--- SpaUI:RegisterEvent('WAYPOINT_UPDATE',test)
-SpaUI:RegisterEvent('WORLD_QUEST_COMPLETED_BY_SPELL',AutoQuest)
-SpaUI:RegisterEvent('QUEST_ACCEPT_CONFIRM',AutoQuest)
-SpaUI:RegisterEvent('QUEST_FINISHED',AutoQuest)
-SpaUI:RegisterEvent('QUEST_GREETING',AutoQuest)
-SpaUI:RegisterEvent('QUEST_ITEM_UPDATE',AutoQuest)
-SpaUI:RegisterEvent('QUEST_PROGRESS',AutoQuest)
-SpaUI:RegisterEvent('DYNAMIC_GOSSIP_POI_UPDATED',AutoQuest)
-SpaUI:RegisterEvent('GOSSIP_CLOSED',AutoQuest)
-SpaUI:RegisterEvent('GOSSIP_CONFIRM',AutoQuest)
-SpaUI:RegisterEvent('GOSSIP_CONFIRM_CANCEL',AutoQuest)
-SpaUI:RegisterEvent('GOSSIP_ENTER_CODE',AutoQuest)
-SpaUI:RegisterEvent('GOSSIP_OPTIONS_REFRESHED',AutoQuest)
-SpaUI:RegisterEvent('GOSSIP_SHOW',AutoQuest)
+-- 开启或关闭自动交接任务
+local function ToggleAutoTurnIn(open)
+    SpaUIConfigDBPC.AutoTurnIn = open
+    if open then
+        SpaUI:RegisterEvent('QUEST_DETAIL',AutoQuest)
+        SpaUI:RegisterEvent('QUEST_GREETING',AutoQuest)
+        SpaUI:RegisterEvent('QUEST_COMPLETE',AutoQuest)
+        SpaUI:RegisterEvent('QUEST_PROGRESS',AutoQuest)
+        SpaUI:RegisterEvent('GOSSIP_SHOW',AutoQuest)
+    else
+        SpaUI:UnregisterEvent('QUEST_DETAIL',AutoQuest)
+        SpaUI:UnregisterEvent('QUEST_GREETING',AutoQuest)
+        SpaUI:UnregisterEvent('QUEST_COMPLETE',AutoQuest)
+        SpaUI:UnregisterEvent('QUEST_PROGRESS',AutoQuest)
+        SpaUI:UnregisterEvent('GOSSIP_SHOW',AutoQuest)
+    end
+end
+
+-- 自动交接开关点击事件
+local function OnAutoTurnInButtonClick(self)
+    PlaySound(self:GetChecked() and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
+    ToggleAutoTurnIn(self:GetChecked())
+end
 
 -- 创建自动交接按钮
 local function CreateAutoTurnInButton()
@@ -130,21 +137,24 @@ local function CreateAutoTurnInButton()
     AutoTurnInButton:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight","ADD")
     AutoTurnInButton:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
     AutoTurnInButton:SetPoint("LEFT",ObjectiveTrackerFrame.HeaderMenu.MinimizeButton,"RIGHT",3,0)
+    AutoTurnInButton:SetScript("OnEnter",function(self)
+        GameTooltip:SetOwner(self,"ANCHOR_TOP")
+        GameTooltip:AddLine(L['auto_quest_turnin_button_tooltip'])
+        GameTooltip:Show()
+    end)
+    AutoTurnInButton:SetScript("OnLeave",function(self)
+        GameTooltip:Hide()
+    end)
+    AutoTurnInButton:SetScript("OnClick",OnAutoTurnInButtonClick)
+
     Widget.AutoTurnInButton = AutoTurnInButton
+
+    AutoTurnInButton:SetChecked(SpaUIConfigDBPC.AutoTurnIn or false)
 end
 
-local function OnObjectiveTrackerLoaded(event,name)
-    if name ~= "Blizzard_ObjectiveTracker" then
-       return
-    end
-    if ObjectiveTrackerFrame and ObjectiveTrackerFrame.HeaderMenu then
-        CreateAutoTurnInButton()
-    end
-    return true
+local function OnInitialzation()
+    CreateAutoTurnInButton()
+    ToggleAutoTurnIn(SpaUIConfigDBPC.AutoTurnIn)
 end
 
-if IsAddOnLoaded('Blizzard_ObjectiveTracker') then
-    OnObjectiveTrackerLoaded('ADDON_LOADED','Blizzard_ObjectiveTracker')
-else
-    SpaUI:CallbackOnce('ADDON_LOADED',OnObjectiveTrackerLoaded)
-end
+SpaUI:CallbackLocalEventOnce(LocalEvents.ADDON_INITIALIZATION,OnInitialzation)

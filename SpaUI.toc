@@ -5,6 +5,7 @@
 ## Notes: 暴雪界面增强，部分代码来源于其它插件及论坛
 ## DefaultState: enabled
 ## SavedVariables: SpaUIConfigDB
+## SavedVariablesPerCharacter: SpaUIConfigDBPC 
 
 #Localization
 Localization\Localization.lua

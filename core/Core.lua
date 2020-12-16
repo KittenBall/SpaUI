@@ -34,6 +34,7 @@ end
 local function OnSpaUIInitialization(event,name)
     if name ~= addonName then return end
     SpaUIConfigDB = SpaUIConfigDB or {}
+    SpaUIConfigDBPC = SpaUIConfigDBPC or {}
     print(L["addon_loaded_tip"]:format(GetAddOnMetadata(addonName, "Version")))
     SpaUI:PostLocalEvent(LocalEvents.ADDON_INITIALIZATION)
     return ture
