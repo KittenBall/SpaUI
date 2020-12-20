@@ -184,7 +184,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_COMMUNITIES_CHANNEL", ChatEmoteFilter)
 local EMOTE_CHAT_DEFAULT_RULE = format("\124T%%s:%d\124t", EMOTE_SIZE)     
 
 local function DefaultReplaceEmote(msg)
-    for i = 1, #emotes do
+    for i = 9, #emotes do
         if msg == emotes[i][1] then
             return format(EMOTE_CHAT_DEFAULT_RULE,emotes[i][2])
         end

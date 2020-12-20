@@ -138,7 +138,7 @@ L["chat_emote_injustice"] = "{委屈}"
 -- ChatCopy
 L["chat_copy_dialog_title"] = "聊天复制"
 -- RaidMarkers
-L["raid_markers_clear_all"] = "清除全部，右键同时隐藏面板"
+L["raid_markers_clear_all"] = "清除全部"
 L["raid_markers_tooltip"] = "（左键放置，右键清除）"
 L["raid_markers_nopermission"] = "你不在队伍里或你不是团长（助理）！"
 -- EJ SavedInstances

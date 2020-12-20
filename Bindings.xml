@@ -1,5 +1,5 @@
 <Bindings>
     <Binding name="SPAUI_TOGGLE_RAID_MARKER_FRAME" runOnUp="false" category="|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI">
-        SpaUI.Widget:ToggleRaidMarkersFrame()
+        <!-- 这里不做逻辑，在RaidMarker.lua里面实现 -->
     </Binding>
 </Bindings>
